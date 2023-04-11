@@ -14,6 +14,8 @@ namespace MissionPlanner.Controls
     public partial class HORUS_PreFlight : UserControl
     {
         private int messagecount;
+        private Plugin.PluginHost _host = null;
+        private HORUS_Panel _panel = new HORUS_Panel();
 
         public HORUS_PreFlight()
         {
@@ -23,6 +25,10 @@ namespace MissionPlanner.Controls
         }
 
 
+        public void setHost(Plugin.PluginHost host)
+        {
+            _host = host;
+        }
 
         private void BUT_arm_Click(object sender, EventArgs e)
         {
@@ -238,6 +244,21 @@ namespace MissionPlanner.Controls
             CB_paco_rdy.Checked = false;
             CB_payload_rdy.Checked = false;
 
+        }
+
+        private void cb_openHORUSPanel_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cb_openHORUSPanel.Checked)
+            {
+                _panel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+
+                _host.MainForm.Invoke((Action)(() =>
+                {
+                    _host.FDGMapControl.Controls.Add(_panel);
+                    _panel.Location = new System.Drawing.Point(_host.FDGMapControl.Width - _panel.Width - 10, 25);
+                    _panel.setHost(_host);
+                }));
+            }
         }
     }
 }

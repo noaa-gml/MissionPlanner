@@ -11,15 +11,14 @@ using MissionPlanner.Utilities;
 
 namespace MissionPlanner.Controls
 {
-    public partial class IRISSControlMode : UserControl
+    public partial class HORUSControlMode : UserControl
     {
         int alt_requested;
         DateTime alt_time;
 
-        public IRISSControlMode()
+        public HORUSControlMode()
         {
             InitializeComponent();
-            timer1.Start();
         }
 
         private void IRISSControlMode_Load(object sender, EventArgs e)
@@ -152,23 +151,11 @@ namespace MissionPlanner.Controls
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+
+
+        private void myButton1_Click(object sender, EventArgs e)
         {
-
-            if (DateTime.Now.Subtract(alt_time).TotalSeconds < 15D)
-            {
-                TXT_target_alt.Text = alt_requested.ToString() + "m / " + (int) MainV2.comPort.MAV.cs.targetalt + "m";
-                TXT_target_alt.BackColor = Color.DarkOrange;
-            } else
-            {
-                alt_requested = (int) MainV2.comPort.MAV.cs.targetalt;
-                TXT_target_alt.Text = (int) MainV2.comPort.MAV.cs.targetalt + "m";
-                TXT_target_alt.BackColor = Color.Black;
-            }
-
-
-
-            
+            // command balloon release
         }
     }
 }

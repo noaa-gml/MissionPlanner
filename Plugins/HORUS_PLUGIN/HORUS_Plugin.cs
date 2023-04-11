@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using MissionPlanner.Controls;
 using MissionPlanner.Utilities;
+using SharpKml.Dom.Atom;
 
 namespace HORUS_plugin_Plugin
 {
@@ -11,6 +12,8 @@ namespace HORUS_plugin_Plugin
         //TabPage
         private System.Windows.Forms.TabPage tab = new System.Windows.Forms.TabPage();
         private TabControl tabctrl;
+        private HORUS_PreFlight pf = new HORUS_PreFlight();
+        private HORUSControlMode controlMode = new HORUSControlMode();
         
 
         public override string Name
@@ -37,7 +40,7 @@ namespace HORUS_plugin_Plugin
         {
             forceSettings();
 
-
+            pf.setHost(Host);
 
             //TODO Uncomment once Beta is updates
             //Host.MainForm.FlightData.TabListOriginal.Add(tab);
@@ -49,9 +52,9 @@ namespace HORUS_plugin_Plugin
             tab.Name = "HORUS_PF";
             // add the usercontrol to the tabpage
 
-            tabctrl.TabPages.Insert(5, tab);
+            tab.Controls.Add(pf);
 
-            //Host.MainForm.FlightPlanner.updateDisplayView();
+            tabctrl.TabPages.Insert(5, tab);
 
             ThemeManager.ApplyThemeTo(tab);
 
