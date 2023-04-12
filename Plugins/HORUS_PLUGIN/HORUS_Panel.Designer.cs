@@ -28,12 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.lblAHRS1 = new System.Windows.Forms.Label();
+            this.lblGliderCalcs = new System.Windows.Forms.Label();
             this.horusControlMode1 = new MissionPlanner.Controls.HORUSControlMode();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -56,18 +62,20 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Location = new System.Drawing.Point(4, 443);
+            this.groupBox3.Controls.Add(this.lblAHRS1);
+            this.groupBox3.Location = new System.Drawing.Point(4, 464);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(216, 123);
+            this.groupBox3.Size = new System.Drawing.Size(216, 102);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "AHRS";
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.lblGliderCalcs);
             this.groupBox4.Location = new System.Drawing.Point(3, 356);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(216, 81);
+            this.groupBox4.Size = new System.Drawing.Size(216, 102);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Glide Calcs";
@@ -81,6 +89,30 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Messages";
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // lblAHRS1
+            // 
+            this.lblAHRS1.AutoSize = true;
+            this.lblAHRS1.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAHRS1.Location = new System.Drawing.Point(7, 20);
+            this.lblAHRS1.Name = "lblAHRS1";
+            this.lblAHRS1.Size = new System.Drawing.Size(35, 16);
+            this.lblAHRS1.TabIndex = 0;
+            this.lblAHRS1.Text = "label1";
+            // 
+            // lblGliderCalcs
+            // 
+            this.lblGliderCalcs.AutoSize = true;
+            this.lblGliderCalcs.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGliderCalcs.Location = new System.Drawing.Point(8, 16);
+            this.lblGliderCalcs.Name = "lblGliderCalcs";
+            this.lblGliderCalcs.Size = new System.Drawing.Size(35, 16);
+            this.lblGliderCalcs.TabIndex = 1;
+            this.lblGliderCalcs.Text = "label1";
+            // 
             // horusControlMode1
             // 
             this.horusControlMode1.BackColor = System.Drawing.Color.Transparent;
@@ -93,7 +125,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.LightGray;
+            this.BackColor = System.Drawing.Color.DimGray;
             this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -102,7 +134,11 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.horusControlMode1);
             this.Name = "HORUS_Panel";
-            this.Size = new System.Drawing.Size(223, 663);
+            this.Size = new System.Drawing.Size(234, 663);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -115,5 +151,8 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label lblAHRS1;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label lblGliderCalcs;
     }
 }

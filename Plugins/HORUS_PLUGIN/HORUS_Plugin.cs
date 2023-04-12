@@ -43,7 +43,7 @@ namespace HORUS_plugin_Plugin
             pf.setHost(Host);
 
             //TODO Uncomment once Beta is updates
-            //Host.MainForm.FlightData.TabListOriginal.Add(tab);
+            Host.MainForm.FlightData.TabListOriginal.Add(tab);
 
             tabctrl = Host.MainForm.FlightData.tabControlactions;
             // set the display name
