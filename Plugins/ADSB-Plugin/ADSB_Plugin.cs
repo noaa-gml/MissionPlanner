@@ -4,16 +4,16 @@ using System.Windows.Forms;
 using MissionPlanner.Controls;
 using MissionPlanner.Utilities;
 using SharpKml.Dom.Atom;
+using MissionPlanner;
 
-namespace HORUS_plugin_Plugin
+namespace ADSB_Plugin
 {
-    public class HORUS_plugin_Plugin : MissionPlanner.Plugin.Plugin
+    public class ADSB_Plugin : MissionPlanner.Plugin.Plugin
     {
         //TabPage
         private System.Windows.Forms.TabPage tab = new System.Windows.Forms.TabPage();
         private TabControl tabctrl;
-        private HORUS_PreFlight pf = new HORUS_PreFlight();
-        private HORUSControlMode controlMode = new HORUSControlMode();
+        private ADSB_Control adsb = new ADSB_Control();
         
 
         public override string Name
@@ -40,19 +40,19 @@ namespace HORUS_plugin_Plugin
         {
             forceSettings();
 
-            pf.setHost(Host);
+            adsb.setHost(Host);
 
             //TODO Uncomment once Beta is updates
             //Host.MainForm.FlightData.TabListOriginal.Add(tab);
 
             tabctrl = Host.MainForm.FlightData.tabControlactions;
             // set the display name
-            tab.Text = "HORUS-Preflight";
+            tab.Text = "NOAA ADSB";
             // set the internal id
-            tab.Name = "HORUS_PF";
+            tab.Name = "ADSB";
             // add the usercontrol to the tabpage
 
-            tab.Controls.Add(pf);
+            tab.Controls.Add(adsb);
 
             tabctrl.TabPages.Insert(5, tab);
 
@@ -81,6 +81,7 @@ namespace HORUS_plugin_Plugin
 
         public override bool Exit()
         {
+            adsb.closeADSB();
             return true;
         }
     }

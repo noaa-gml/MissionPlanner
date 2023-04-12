@@ -56,7 +56,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Location = new System.Drawing.Point(3, 421);
+            this.groupBox3.Location = new System.Drawing.Point(4, 443);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(216, 123);
             this.groupBox3.TabIndex = 2;
@@ -65,7 +65,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Location = new System.Drawing.Point(3, 334);
+            this.groupBox4.Location = new System.Drawing.Point(3, 356);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(216, 81);
             this.groupBox4.TabIndex = 3;
@@ -74,7 +74,7 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Location = new System.Drawing.Point(4, 550);
+            this.groupBox5.Location = new System.Drawing.Point(4, 572);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(216, 79);
             this.groupBox5.TabIndex = 4;
@@ -102,7 +102,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.horusControlMode1);
             this.Name = "HORUS_Panel";
-            this.Size = new System.Drawing.Size(223, 645);
+            this.Size = new System.Drawing.Size(223, 663);
             this.ResumeLayout(false);
 
         }
