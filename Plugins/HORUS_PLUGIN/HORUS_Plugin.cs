@@ -11,9 +11,11 @@ namespace HORUS_plugin_Plugin
     {
         //TabPage
         private System.Windows.Forms.TabPage tab = new System.Windows.Forms.TabPage();
+        private System.Windows.Forms.TabPage tab2 = new System.Windows.Forms.TabPage();
         private TabControl tabctrl;
         private HORUS_PreFlight pf = new HORUS_PreFlight();
         private HORUSControlMode controlMode = new HORUSControlMode();
+        private MAVLinkInspectorControl mavLink = null;
         
 
         public override string Name
@@ -42,21 +44,31 @@ namespace HORUS_plugin_Plugin
 
             pf.setHost(Host);
 
+            mavLink = new MAVLinkInspectorControl(Host.comPort);
+
+
+
             //TODO Uncomment once Beta is updates
             Host.MainForm.FlightData.TabListOriginal.Add(tab);
+            Host.MainForm.FlightData.TabListOriginal.Add(tab2);
 
             tabctrl = Host.MainForm.FlightData.tabControlactions;
             // set the display name
             tab.Text = "HORUS-Preflight";
+            tab2.Text = "MAVLink";
             // set the internal id
             tab.Name = "HORUS_PF";
+            tab2.Name = "MAVLink";
             // add the usercontrol to the tabpage
 
             tab.Controls.Add(pf);
+            tab2.Controls.Add(mavLink);
 
+            tabctrl.TabPages.Insert(5, tab2);
             tabctrl.TabPages.Insert(5, tab);
 
             ThemeManager.ApplyThemeTo(tab);
+            ThemeManager.ApplyThemeTo(tab2);
 
             return true;
         }

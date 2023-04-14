@@ -94,6 +94,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MAVLinkInspectorControl.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Update="System">
       <Private>false</Private>
     </Reference>

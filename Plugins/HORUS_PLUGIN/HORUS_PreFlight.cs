@@ -15,15 +15,46 @@ namespace MissionPlanner.Controls
     {
         private int messagecount;
         private Plugin.PluginHost _host = null;
-        private HORUS_Panel _panel = new HORUS_Panel();
+        private HORUS_Panel _panel = null;
 
         public HORUS_PreFlight()
         {
             InitializeComponent();
 
             timer1.Start();
+            timer2.Start();
         }
 
+
+        private void cb_openHORUSPanel_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cb_openHORUSPanel.Checked)
+            {
+                try
+                {
+                    if (_panel == null)
+                {
+                    _panel = new HORUS_Panel();
+                    _panel.setHost(_host); 
+                }
+
+                
+                    _panel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+
+                    _host.MainForm.Invoke((Action)(() =>
+                    {
+                        _host.FDGMapControl.Controls.Add(_panel);
+                        _panel.Location = new System.Drawing.Point(_host.FDGMapControl.Width - _panel.Width - 10, 25);
+                        _panel.setHost(_host);
+                    }));
+                }
+                catch
+                {
+                    cb_openHORUSPanel.Checked = false;
+
+                }
+            }
+        }
 
         public void setHost(Plugin.PluginHost host)
         {
@@ -132,26 +163,7 @@ namespace MissionPlanner.Controls
                     }
                 }
 
-                if (MainV2.comPort.BaseStream != null && MainV2.comPort.BaseStream.IsOpen)
-                {
-                    TXT_info.Text = "Imporant Settings: \r\n";
 
-                    displayParamVal("ALT_HOLD_RTL", "cm");
-                    displayParamVal("RTL_RADIUS", "m (opt)");
-                    displayParamVal("WP_LOITER_RAD", "m");
-
-                    displayParamVal("FS_GCS_ENABL", "");
-                    displayParamVal("THR_FAILSAFE", "");
-                    displayParamVal("FS_SHORT_ACTN", "");
-                    displayParamVal("FS_LONG_ACTN", "");
-                    displayParamVal("SYSID_THISMAV", "");
-
-
-                }
-                else
-                {
-                    TXT_info.Text = "Not Connected.";
-                }
 
                 //var isitarmed = MainV2.comPort.MAV.cs.armed;
                 BUT_arm.Text = MainV2.comPort.MAV.cs.armed ? "DISARM" : "ARM";
@@ -162,11 +174,54 @@ namespace MissionPlanner.Controls
 
         }
 
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (MainV2.comPort.BaseStream != null && MainV2.comPort.BaseStream.IsOpen)
+            {
+                lblParams.Text = "Imporant Settings: \r\n";
+
+                displayParamVal("ALT_HOLD_RTL", "cm");
+                displayParamVal("RTL_RADIUS", "m (opt)");
+                displayParamVal("WP_LOITER_RAD", "m");
+
+                displayParamVal("AFS_ENABLE", "");
+                displayParamVal("AFS_TERM_ACTION", "");
+                displayParamVal("FENCE_AUTOENABLE", "");
+                displayParamVal("FENCE_ACTION", "");
+                displayParamVal("FS_GCS_ENABL", "");
+                displayParamVal("THR_FAILSAFE", "");
+                displayParamVal("FS_SHORT_ACTN", "");
+                displayParamVal("FS_LONG_ACTN", "");
+                displayParamVal("SYSID_THISMAV", "");
+
+                displayParamVal("PUP_ELEV_OFS", "");
+                displayParamVal("PUP_NG_LIM", "");
+                displayParamVal("PUP_NG_JERK_LIM", "");
+                displayParamVal("PUP_PITCH_CD", "");
+
+                displayParamVal("SCR_USER1", "(MFS on)");
+                displayParamVal("SCR_USER2", "(mar. buf)");
+                displayParamVal("SCR_USER3", "(Cht Rls Alt)");
+                displayParamVal("SCR_USER4", "(Spd Sch On)");
+
+                displayParamVal("TERRAIN_ENABLE", "");
+
+            }
+            else
+            {
+                lblParams.Text = "Not Connected.";
+            }
+        }
+
         private void displayParamVal(String valName, String units)
         {
             if (MainV2.comPort.MAV.param.ContainsKey(valName))
             {
-                TXT_info.Text += String.Format("{0,-15}{1,-8}{2,-10}\n", valName, MainV2.comPort.MAV.param[valName], units);
+                lblParams.Text += valName.PadRight(16) +
+                                  MainV2.comPort.MAV.param[valName].ToString().PadLeft(8) +
+                                  " " +
+                                  units.PadRight(10) +
+                                  "\n";
             } else
             {
                 //Console.WriteLine("No Param: " + valName);
@@ -246,20 +301,9 @@ namespace MissionPlanner.Controls
 
         }
 
-        private void cb_openHORUSPanel_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cb_openHORUSPanel.Checked)
-            {
-                _panel.Anchor = AnchorStyles.Right | AnchorStyles.Top;
 
-                _host.MainForm.Invoke((Action)(() =>
-                {
-                    _host.FDGMapControl.Controls.Add(_panel);
-                    _panel.Location = new System.Drawing.Point(_host.FDGMapControl.Width - _panel.Width - 10, 25);
-                    _panel.setHost(_host);
-                }));
-            }
-        }
+
+
     }
 }
 
