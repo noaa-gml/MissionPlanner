@@ -34,8 +34,7 @@ namespace MissionPlanner.Controls
             this.setGuided = new MissionPlanner.Controls.MyButton();
             this.setRTL = new MissionPlanner.Controls.MyButton();
             this.butBalloon = new MissionPlanner.Controls.MyButton();
-            this.myButton2 = new MissionPlanner.Controls.MyButton();
-            this.myButton1 = new MissionPlanner.Controls.MyButton();
+            this.butParachute = new MissionPlanner.Controls.MyButton();
             this.SuspendLayout();
             // 
             // setFBWA
@@ -79,7 +78,7 @@ namespace MissionPlanner.Controls
             this.setRTL.BGGradBot = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.setRTL.BGGradTop = System.Drawing.Color.DarkOrange;
             this.setRTL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.setRTL.Location = new System.Drawing.Point(4, 122);
+            this.setRTL.Location = new System.Drawing.Point(4, 68);
             this.setRTL.Name = "setRTL";
             this.setRTL.Size = new System.Drawing.Size(67, 48);
             this.setRTL.TabIndex = 3;
@@ -94,58 +93,44 @@ namespace MissionPlanner.Controls
             this.butBalloon.BGGradBot = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.butBalloon.BGGradTop = System.Drawing.Color.Red;
             this.butBalloon.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBalloon.Location = new System.Drawing.Point(77, 122);
+            this.butBalloon.Location = new System.Drawing.Point(77, 68);
             this.butBalloon.Name = "butBalloon";
             this.butBalloon.Size = new System.Drawing.Size(67, 48);
             this.butBalloon.TabIndex = 4;
-            this.butBalloon.Text = "Release\r\nBalloon";
+            this.butBalloon.Text = "Cut Away Balloon ";
             this.butBalloon.TextColor = System.Drawing.Color.Black;
             this.butBalloon.TextColorNotEnabled = System.Drawing.Color.Black;
             this.butBalloon.UseVisualStyleBackColor = true;
-            this.butBalloon.Click += new System.EventHandler(this.myButton1_Click);
+            this.butBalloon.Click += new System.EventHandler(this.butBalloon_Click);
             // 
-            // myButton2
+            // butParachute
             // 
-            this.myButton2.BGGradBot = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.myButton2.BGGradTop = System.Drawing.Color.Red;
-            this.myButton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.myButton2.Location = new System.Drawing.Point(148, 122);
-            this.myButton2.Name = "myButton2";
-            this.myButton2.Size = new System.Drawing.Size(67, 48);
-            this.myButton2.TabIndex = 5;
-            this.myButton2.Text = "Parachute";
-            this.myButton2.TextColor = System.Drawing.Color.Black;
-            this.myButton2.TextColorNotEnabled = System.Drawing.Color.Black;
-            this.myButton2.UseVisualStyleBackColor = true;
-            // 
-            // myButton1
-            // 
-            this.myButton1.BGGradBot = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.myButton1.BGGradTop = System.Drawing.Color.DarkSlateBlue;
-            this.myButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.myButton1.Location = new System.Drawing.Point(75, 68);
-            this.myButton1.Name = "myButton1";
-            this.myButton1.Size = new System.Drawing.Size(67, 48);
-            this.myButton1.TabIndex = 6;
-            this.myButton1.Text = "Command\r\nPullup";
-            this.myButton1.TextColor = System.Drawing.Color.Black;
-            this.myButton1.TextColorNotEnabled = System.Drawing.Color.Black;
-            this.myButton1.UseVisualStyleBackColor = true;
+            this.butParachute.BGGradBot = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.butParachute.BGGradTop = System.Drawing.Color.Red;
+            this.butParachute.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butParachute.Location = new System.Drawing.Point(148, 68);
+            this.butParachute.Name = "butParachute";
+            this.butParachute.Size = new System.Drawing.Size(67, 48);
+            this.butParachute.TabIndex = 5;
+            this.butParachute.Text = "Parachute";
+            this.butParachute.TextColor = System.Drawing.Color.Black;
+            this.butParachute.TextColorNotEnabled = System.Drawing.Color.Black;
+            this.butParachute.UseVisualStyleBackColor = true;
+            this.butParachute.Click += new System.EventHandler(this.butParachute_Click);
             // 
             // HORUSControlMode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.myButton1);
-            this.Controls.Add(this.myButton2);
+            this.Controls.Add(this.butParachute);
             this.Controls.Add(this.butBalloon);
             this.Controls.Add(this.setRTL);
             this.Controls.Add(this.setGuided);
             this.Controls.Add(this.setAuto);
             this.Controls.Add(this.setFBWA);
             this.Name = "HORUSControlMode";
-            this.Size = new System.Drawing.Size(223, 180);
+            this.Size = new System.Drawing.Size(223, 129);
             this.Load += new System.EventHandler(this.IRISSControlMode_Load);
             this.ResumeLayout(false);
 
@@ -158,7 +143,6 @@ namespace MissionPlanner.Controls
         private MyButton setGuided;
         private MyButton setRTL;
         private MyButton butBalloon;
-        private MyButton myButton2;
-        private MyButton myButton1;
+        private MyButton butParachute;
     }
 }

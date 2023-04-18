@@ -151,11 +151,85 @@ namespace MissionPlanner.Controls
             }
         }
 
-
-
-        private void myButton1_Click(object sender, EventArgs e)
+        private void butParachute_Click(object sender, EventArgs e)
         {
-            // command balloon release
+            try
+            {
+                if (
+                CustomMessageBox.Show("Are you sure you want to Activate Parachute??", "Action",
+                    MessageBoxButtons.YesNo) == (int)DialogResult.Yes)
+                {
+
+                    if (
+                    CustomMessageBox.Show("Are you SURE YOU ARE SURE you want to Activate Parachute", "Action",
+                    MessageBoxButtons.YesNo) == (int)DialogResult.Yes)
+                    {
+                        int param1 = 2;
+                        int param2 = 0;
+                        int param3 = 0;
+
+                        var cmd = (MAVLink.MAV_CMD)Enum.Parse(typeof(MAVLink.MAV_CMD), "DO_PARACHUTE");
+
+                        if (MainV2.comPort.doCommand(cmd, param1, param2, param3, 0, 0, 0, 0))
+                        {
+                            Console.WriteLine("PARACHUTE COMMANDED PARACHUTE COMMANDED PARACHUTE COMMANDED PARACHUTE COMMANDED PARACHUTE COMMANDED ");
+                        }
+                        else
+                        {
+                            CustomMessageBox.Show(Strings.CommandFailed + " " + cmd, Strings.ERROR);
+                        }
+
+                    }
+                    
+
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.CommandFailed, Strings.ERROR);
+            }
+        }
+
+        private void butBalloon_Click(object sender, EventArgs e)
+        {
+            
+
+            try
+            {
+                if (
+                CustomMessageBox.Show("Are you sure you want to Release Balloon??", "Action",
+                    MessageBoxButtons.YesNo) == (int)DialogResult.Yes)
+                {
+
+                    if (
+                    CustomMessageBox.Show("Are you SURE YOU ARE SURE you want to Release Ballon", "Action",
+                    MessageBoxButtons.YesNo) == (int)DialogResult.Yes)
+                    {
+
+                        var cmd = (MAVLink.MAV_CMD)Enum.Parse(typeof(MAVLink.MAV_CMD), "DO_PARACHUTE");
+
+                        if (MainV2.comPort.doCommand((byte)MainV2.comPort.sysidcurrent, 
+                                                     (byte)MainV2.comPort.compidcurrent, 
+                                                     MAVLink.MAV_CMD.DO_SET_SERVO, 
+                                                     10,1900, 0, 0, 0, 0, 0))
+                        {
+                            Console.WriteLine("Balloon Release Balloon Release Balloon Release Balloon Release Balloon Release Balloon Release Balloon Release ");
+                        }
+                        else
+                        {
+                            CustomMessageBox.Show(Strings.CommandFailed + " " + cmd, Strings.ERROR);
+                        }
+
+                    }
+
+
+                }
+            }
+            catch
+            {
+                CustomMessageBox.Show(Strings.CommandFailed, Strings.ERROR);
+            }
+
         }
     }
 }

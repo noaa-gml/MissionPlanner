@@ -151,7 +151,7 @@ namespace MissionPlanner.Controls
                         StringBuilder message = new StringBuilder();
                         MainV2.comPort.MAV.cs.messages.ForEach(x =>
                         {
-                            message.Insert(0, x.Item1 + " : " + x.Item2 + "\n");
+                            message.Insert(0, x.Item1.ToString("hh:mm:ss") + " : " + x.Item2 + "\n");
                         });
                         TXT_msgBox.Text = message.ToString();
 
@@ -183,6 +183,8 @@ namespace MissionPlanner.Controls
                 displayParamVal("ALT_HOLD_RTL", "cm");
                 displayParamVal("RTL_RADIUS", "m (opt)");
                 displayParamVal("WP_LOITER_RAD", "m");
+                displayParamVal("SERVO9_FUNCTION", "(== 27)");
+                displayParamVal("CHUTE_CHANNEL", "(== 6)");
 
                 displayParamVal("AFS_ENABLE", "");
                 displayParamVal("AFS_TERM_ACTION", "");
