@@ -47,6 +47,7 @@ namespace MissionPlanner
             //strCmdText = "/c C:\\dump1090\\dump1090.bat";
             //System.Diagnostics.Process.Start("CMD.exe", strCmdText);
 
+            //https://github.com/MalcolmRobb/dump1090 
             //dump1090.exe --interactive --net --net-ro-size 500 --net-ro-rate 5 --net-buffer 5 --net-beast --mlat --device-index 1
 
             //string anyCommand = @"C:\dump1090\dump1090.bat";
@@ -68,14 +69,14 @@ namespace MissionPlanner
             try {
                 if (_host == null || _host.MainForm == null) return;
                 rtADSBList.Text += "Hex".PadRight(12) +
-                                   "Sqwk".PadRight(10) +
+                                   "CS".PadRight(10) +
                                    "Lat".PadRight(12) +
                                    "Lng".PadRight(12) +
                                    "Alt".PadRight(10) + "\n"; 
                 foreach (adsb.PointLatLngAltHdg plla in _host.MainForm.adsbPlanes.Values)
                 {
                     rtADSBList.Text += plla.Tag.PadRight(12) +
-                                        Convert.ToString(plla.Squawk).PadRight(10) +
+                                        plla.CallSign.PadRight(10) +
                                         plla.Lat.ToString("0.000").PadRight(12) +
                                         plla.Lng.ToString("0.000").PadRight(12) +
                                         plla.Alt.ToString("0.0").PadRight(10) + "\n";

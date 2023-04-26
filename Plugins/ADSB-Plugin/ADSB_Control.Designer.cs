@@ -55,6 +55,7 @@
             // 
             // rtADSBList
             // 
+            this.rtADSBList.Font = new System.Drawing.Font("Lucida Sans Typewriter", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtADSBList.Location = new System.Drawing.Point(4, 82);
             this.rtADSBList.Name = "rtADSBList";
             this.rtADSBList.Size = new System.Drawing.Size(446, 308);
