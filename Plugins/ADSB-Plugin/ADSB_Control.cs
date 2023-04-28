@@ -68,19 +68,22 @@ namespace MissionPlanner
             rtADSBList.Text = System.DateTime.Now.ToString("HH:mm:ss tt") + "\n\n";
             try {
                 if (_host == null || _host.MainForm == null) return;
-                rtADSBList.Text += "Hex".PadRight(12) +
-                                   "CS".PadRight(10) +
-                                   "Lat".PadRight(12) +
-                                   "Lng".PadRight(12) +
-                                   "Alt".PadRight(10) + "\n"; 
+                rtADSBList.Text += "Hex".PadRight(7) +
+                                   "CS".PadRight(9) +
+                                   "Alt".PadRight(7) +
+                                   "Lat".PadRight(7) +
+                                   "Lng".PadRight(9) +
+                                    "\n"; 
                 foreach (adsb.PointLatLngAltHdg plla in _host.MainForm.adsbPlanes.Values)
                 {
-                    rtADSBList.Text += plla.Tag.PadRight(12) +
-                                        plla.CallSign.PadRight(10) +
-                                        plla.Lat.ToString("0.000").PadRight(12) +
-                                        plla.Lng.ToString("0.000").PadRight(12) +
-                                        plla.Alt.ToString("0.0").PadRight(10) + "\n";
-                                        
+                    rtADSBList.Text += plla.Tag.PadRight(7) +
+                                        plla.CallSign.PadRight(9) +
+                                        plla.Alt.ToString("0").PadRight(7) + 
+                                        plla.Lat.ToString("0.000").PadRight(7) +
+                                        plla.Lng.ToString("0.000").PadRight(9) + 
+                                        "\n";
+
+
                 }
             }
             catch (Exception ex) {

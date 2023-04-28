@@ -34,6 +34,7 @@
             this.rtADSBList = new System.Windows.Forms.RichTextBox();
             this.numDevID = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDevID)).BeginInit();
             this.SuspendLayout();
             // 
@@ -78,10 +79,23 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Device ID";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(230, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(220, 36);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Dump1090.exe must be installed at c:\\dump1090\\\r\nConnect to localhost:30005 to get" +
+    " callsigns working. \r\nIf using FA Direct Etherenet: 169.254.145.55:30005\r\n";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // ADSB_Control
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numDevID);
             this.Controls.Add(this.rtADSBList);
@@ -101,5 +115,6 @@
         private System.Windows.Forms.RichTextBox rtADSBList;
         private System.Windows.Forms.NumericUpDown numDevID;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

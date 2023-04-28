@@ -71,7 +71,7 @@ namespace MissionPlanner.Controls
             this.setGuided.TextColor = System.Drawing.Color.Black;
             this.setGuided.TextColorNotEnabled = System.Drawing.Color.Black;
             this.setGuided.UseVisualStyleBackColor = true;
-            this.setGuided.Click += new System.EventHandler(this.setGuided_Click);
+            this.setGuided.Click += new System.EventHandler(this.setManual_Click);
             // 
             // setRTL
             // 

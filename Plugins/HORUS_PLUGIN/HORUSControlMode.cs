@@ -42,12 +42,12 @@ namespace MissionPlanner.Controls
             ((Control)sender).Enabled = true;
         }
 
-        private void setGuided_Click(object sender, EventArgs e)
+        private void setManual_Click(object sender, EventArgs e)
         {
             try
             {
                 ((Control)sender).Enabled = false;
-                MainV2.comPort.setMode("Guided");
+                MainV2.comPort.setMode("Manual");
             }
             catch
             {
