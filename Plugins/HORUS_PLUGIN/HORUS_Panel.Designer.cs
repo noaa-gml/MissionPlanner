@@ -33,16 +33,16 @@
             this.ledHB = new Bulb.LedBulb();
             this.lblCommStats = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblMission = new System.Windows.Forms.Label();
+            this.butPullup = new MissionPlanner.Controls.MyButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lblAHRS1 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.lblGliderCalcs = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.butPullup = new MissionPlanner.Controls.MyButton();
-            this.lblMission = new System.Windows.Forms.Label();
-            this.horusControlMode1 = new MissionPlanner.Controls.HORUSControlMode();
             this.TXT_msgBox = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.horusControlMode1 = new MissionPlanner.Controls.HORUSControlMode();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -90,6 +90,28 @@
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mission Stats";
+            // 
+            // lblMission
+            // 
+            this.lblMission.AutoSize = true;
+            this.lblMission.Font = new System.Drawing.Font("Lucida Sans Typewriter", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMission.Location = new System.Drawing.Point(8, 16);
+            this.lblMission.Name = "lblMission";
+            this.lblMission.Size = new System.Drawing.Size(35, 10);
+            this.lblMission.TabIndex = 2;
+            this.lblMission.Text = "label1";
+            // 
+            // butPullup
+            // 
+            this.butPullup.Enabled = false;
+            this.butPullup.Location = new System.Drawing.Point(152, 10);
+            this.butPullup.Name = "butPullup";
+            this.butPullup.Size = new System.Drawing.Size(58, 65);
+            this.butPullup.TabIndex = 0;
+            this.butPullup.Text = "Advance to Pullup";
+            this.butPullup.TextColorNotEnabled = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(87)))), ((int)(((byte)(4)))));
+            this.butPullup.UseVisualStyleBackColor = true;
+            this.butPullup.Click += new System.EventHandler(this.butPullup_Click);
             // 
             // groupBox3
             // 
@@ -141,32 +163,19 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Messages";
             // 
+            // TXT_msgBox
+            // 
+            this.TXT_msgBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_msgBox.Location = new System.Drawing.Point(9, 19);
+            this.TXT_msgBox.Name = "TXT_msgBox";
+            this.TXT_msgBox.Size = new System.Drawing.Size(201, 124);
+            this.TXT_msgBox.TabIndex = 5;
+            this.TXT_msgBox.Text = "";
+            // 
             // timer1
             // 
             this.timer1.Interval = 200;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // butPullup
-            // 
-            this.butPullup.Enabled = false;
-            this.butPullup.Location = new System.Drawing.Point(152, 10);
-            this.butPullup.Name = "butPullup";
-            this.butPullup.Size = new System.Drawing.Size(58, 65);
-            this.butPullup.TabIndex = 0;
-            this.butPullup.Text = "Advance to Pullup";
-            this.butPullup.TextColorNotEnabled = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(87)))), ((int)(((byte)(4)))));
-            this.butPullup.UseVisualStyleBackColor = true;
-            this.butPullup.Click += new System.EventHandler(this.butPullup_Click);
-            // 
-            // lblMission
-            // 
-            this.lblMission.AutoSize = true;
-            this.lblMission.Font = new System.Drawing.Font("Lucida Sans Typewriter", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMission.Location = new System.Drawing.Point(8, 16);
-            this.lblMission.Name = "lblMission";
-            this.lblMission.Size = new System.Drawing.Size(35, 10);
-            this.lblMission.TabIndex = 2;
-            this.lblMission.Text = "label1";
             // 
             // horusControlMode1
             // 
@@ -175,15 +184,6 @@
             this.horusControlMode1.Name = "horusControlMode1";
             this.horusControlMode1.Size = new System.Drawing.Size(223, 125);
             this.horusControlMode1.TabIndex = 0;
-            // 
-            // TXT_msgBox
-            // 
-            this.TXT_msgBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TXT_msgBox.Location = new System.Drawing.Point(9, 19);
-            this.TXT_msgBox.Name = "TXT_msgBox";
-            this.TXT_msgBox.Size = new System.Drawing.Size(201, 124);
-            this.TXT_msgBox.TabIndex = 5;
-            this.TXT_msgBox.Text = "";
             // 
             // HORUS_Panel
             // 
