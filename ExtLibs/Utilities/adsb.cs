@@ -768,7 +768,7 @@ namespace MissionPlanner.Utilities
                             if (UpdatePlanePosition != null && plla != null)
                                 UpdatePlanePosition(null, plla);
                             //Console.WriteLine(plane.pllalocal(plane.llaeven));
-                            Console.WriteLine("AVR ADSB: " + plane.ID + " " + plla + " CS: " + plla.CallSign);
+                            //Console.WriteLine("AVR ADSB: " + plane.ID + " " + plla + " CS: " + plla.CallSign);
                         }
                     }
                 }
@@ -1115,7 +1115,7 @@ namespace MissionPlanner.Utilities
                         double cog = (Math.Atan2(ewvel, nsvel) * (180 / Math.PI));
                         double _gs = Math.Sqrt(ewvel * ewvel + nsvel * nsvel) ;
 
-                        Console.WriteLine("vel " + ewvel + " " + nsvel + " " + cog + " gs " + _gs);
+                        //Console.WriteLine("vel " + ewvel + " " + nsvel + " " + cog + " gs " + _gs);
 
                         ((Plane)Planes[adsbmess.AA.ToString("X5")]).heading = (cog + 360) % 360;
                         ((Plane)Planes[adsbmess.AA.ToString("X5")]).ground_speed = (int) _gs;

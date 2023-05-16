@@ -25,6 +25,8 @@ namespace MissionPlanner
         int packetCounter;
 
         int hb_counter = 1;
+        int mav_ftp_counter = 0;
+        int msg_counter = 0;
 
         private int messagecount;
 
@@ -55,31 +57,40 @@ namespace MissionPlanner
             printCommStats();
             printMission();
 
-            if (true) // MainV2.instance.FlightData.isPreFlightSelected()) //MainV2.instance.FlightData.tabControlactions.SelectedTab == MainV2.instance.FlightData.IRISS_PreFlight)
+     
+
+            var messagetime = MainV2.comPort.MAV.cs.messages.LastOrDefault().time;
+            if (messagecount != messagetime.toUnixTime())
             {
-
-                var messagetime = MainV2.comPort.MAV.cs.messages.LastOrDefault().time;
-                if (messagecount != messagetime.toUnixTime())
+                try
                 {
-                    try
+                    StringBuilder message = new StringBuilder();
+                    MainV2.comPort.MAV.cs.messages.ForEach(x =>
                     {
-                        StringBuilder message = new StringBuilder();
-                        MainV2.comPort.MAV.cs.messages.ForEach(x =>
-                        {
-                            message.Insert(0, x.Item1.ToString("hh:mm:ss") + " : " + x.Item2 + "\n");
-                        });
-                        TXT_msgBox.Text = message.ToString();
+                        message.Insert(0, x.Item1.ToString("hh:mm:ss") + " : " + x.Item2 + "\n");
+                    });
+                    TXT_msgBox.Text = message.ToString();
 
-                        messagecount = messagetime.toUnixTime();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error in messages IRISS PreFlight");
-                    }
+                    messagecount = messagetime.toUnixTime();
                 }
-
-
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error in messages IRISS PreFlight");
+                }
             }
+
+            if (msg_counter > 0)
+            {
+                TXT_msgBox.BackColor = Color.DarkOliveGreen;
+                //TXT_msgBox.ForeColor = Color.Black;
+                msg_counter--;
+            } else
+            {
+                TXT_msgBox.BackColor = Color.FromArgb(64, 64, 64);
+                //TXT_msgBox.ForeColor = Color.White;
+            }
+
+            
 
         }
 
@@ -105,12 +116,15 @@ namespace MissionPlanner
                                byteRate.ToString().PadLeft(8) + " bps\n";
                 lblCommStats.Text += "Packet Rate: ".PadRight(14) +
                                packetRate.ToString().PadLeft(8) + " pps\n";
-                lblCommStats.Text += "RX Error: ".PadRight(14) +
-                                _host.cs.rxerrors.ToString().PadLeft(8) + "\n"; 
-                lblCommStats.Text += "TX Buffer: ".PadRight(14) +
-                                _host.cs.txbuffer.ToString().PadLeft(8) + "\n";
                 lblCommStats.Text += "Last HB: ".PadRight(14) +
                                ((float) hb_counter / (1000/timer1.Interval)).ToString("0.0").PadLeft(8) + " sec\n";
+
+
+                if (mav_ftp_counter > 0)
+                {
+                    lblCommStats.Text += "MAV FTP Detected";
+                    mav_ftp_counter--; 
+                }
             }
             catch
             {
@@ -118,19 +132,20 @@ namespace MissionPlanner
             }
         }
 
- 
+
 
         private void MavOnOnPacketReceived(object o, MAVLink.MAVLinkMessage linkMessage)
         {
             byteCount += linkMessage.Length;
             packetCount++;
-            if (linkMessage.msgid == (uint) MAVLink.MAVLINK_MSG_ID.HEARTBEAT) 
-                hb_counter = 0; 
-        }
+            if (linkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.HEARTBEAT)
+                hb_counter = 0;
 
-        private void packetDropped()
-        {
+            if (linkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.FILE_TRANSFER_PROTOCOL)
+                mav_ftp_counter = 10;
 
+            if (linkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.STATUSTEXT)
+                msg_counter = 10;
         }
 
 

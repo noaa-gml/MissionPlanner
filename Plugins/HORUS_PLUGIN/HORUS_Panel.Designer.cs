@@ -165,12 +165,14 @@
             // 
             // TXT_msgBox
             // 
-            this.TXT_msgBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_msgBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.TXT_msgBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TXT_msgBox.ForeColor = System.Drawing.Color.White;
             this.TXT_msgBox.Location = new System.Drawing.Point(9, 19);
             this.TXT_msgBox.Name = "TXT_msgBox";
             this.TXT_msgBox.Size = new System.Drawing.Size(201, 124);
             this.TXT_msgBox.TabIndex = 5;
-            this.TXT_msgBox.Text = "";
+            this.TXT_msgBox.Text = "Messages";
             // 
             // timer1
             // 
