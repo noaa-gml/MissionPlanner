@@ -29,8 +29,11 @@ namespace MissionPlanner
 
         static Dual_Serial_Ports Instance;
 
-        private ICommsSerial outputUDP; 
+        private ICommsSerial outputTCP; 
         DateTime com1_last_HB = DateTime.Now;
+        DateTime com1_last_TX = DateTime.Now;
+        DateTime com1_last_FTP = DateTime.Now;
+        DateTime com1_last_ACK = DateTime.Now;
         DateTime com2_last_HB = DateTime.Now;
         int packetRXCount1, packetRXCount2;  
         int packetSentCount1, packetSentCount2;
@@ -52,6 +55,11 @@ namespace MissionPlanner
 
         private void start_thread()
         {
+            if (threadrun)
+            {
+                statusLine("Thread already running?");
+                return;
+            }
             threadrun = true;
             _thread = new System.Threading.Thread(new System.Threading.ThreadStart(mainloop))
             {
@@ -62,24 +70,64 @@ namespace MissionPlanner
 
         }
 
-        private void packetReceivedHandler(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
+        private void packetReceivedHandler1(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
+        {
+            packetReceivedHandler(sender, mavLinkMessage, 1); 
+        }
+
+        private void packetReceivedHandler2(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
+        {
+            packetReceivedHandler(sender, mavLinkMessage, 2);
+        }
+
+        private void statusLine(string str)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                rt_log.Text += DateTime.Now.ToShortDateString() + " " + str + "\n" + rt_log.Text;
+            });
+        }
+
+        static List<ushort> cmdsIgnore = new List<ushort> {
+            (ushort) MAVLink.MAVLINK_MSG_ID.AUTOPILOT_VERSION_REQUEST,
+            (ushort) MAVLink.MAVLINK_MSG_ID.REQUEST_DATA_STREAM,
+            512,
+            520
+
+        };
+
+        private void packetReceivedHandler(object sender, MAVLink.MAVLinkMessage mavLinkMessage, int comNum)
         {
             packetRXCount1++; 
             if (mavLinkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.HEARTBEAT) com1_last_HB = DateTime.Now.AddMilliseconds(200);
-            //Console.WriteLine("{DUAL} Handling: " + mavLinkMessage.ToString());
-            if (outputUDP != null && outputUDP.IsOpen)
-                outputUDP.Write(mavLinkMessage.buffer,0,mavLinkMessage.buffer.Length);
+            if (mavLinkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.FILE_TRANSFER_PROTOCOL) com1_last_FTP = DateTime.Now.AddMilliseconds(200);
+            if (mavLinkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.COMMAND_ACK &&
+                !cmdsIgnore.Contains(((MAVLink.mavlink_command_ack_t)mavLinkMessage.data).command))
+            {
+                com1_last_ACK = DateTime.Now.AddMilliseconds(200);
+                statusLine("COM1 ACK RECEIVED: " + ((MAVLink.mavlink_command_ack_t)mavLinkMessage.data).command); 
+            }
+
+            if (outputTCP != null && outputTCP.IsOpen)
+                outputTCP.Write(mavLinkMessage.buffer,0,mavLinkMessage.buffer.Length);
         }
 
-        private void packetSentHandler(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
+        private void packetSentHandler1(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
         {
-            packetSentCount1++;
+            //Console.WriteLine("{DUAL} Sending: " + mavLinkMessage.ToString());
+            //packetSentCount1++;
+            //com1_last_TX = DateTime.Now.AddMilliseconds(200);
         }
+        private void packetSentHandler2(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
+        {
+            packetSentCount2++;
+        }
+
 
         private void BUT_connect_Click(object sender, EventArgs e)
         {
-            
 
+            lbl_com1_status.Text = "Connecting to " + CMB_serialport.Text + "...";
             switch (CMB_serialport.Text)
             {
                 case "TCP":
@@ -110,8 +158,9 @@ namespace MissionPlanner
                 Console.WriteLine(exp);
             }
 
-            this.comPort1.OnPacketReceived += this.packetReceivedHandler;
-            this.comPort1.OnPacketSent += this.packetSentHandler;
+            this.comPort1.OnPacketReceived += this.packetReceivedHandler1;
+            this.comPort1.OnPacketSent += this.packetSentHandler1;
+
 
             // do the connect
             this.comPort1.Open(false, false, false);
@@ -119,7 +168,7 @@ namespace MissionPlanner
 
             if (!this.comPort1.BaseStream.IsOpen)
             {
-                Console.WriteLine("{DUAL} comport is closed. existing connect");
+                statusLine("{DUAL} comport is closed. existing connect");
                 try
                 {
                     //_connectionControl.IsConnected(false);
@@ -134,21 +183,29 @@ namespace MissionPlanner
             }
 
             this.comPort1.giveComport = false;
-
+            lbl_com1_status.Text = "Com Port OPened..."; 
             this.comPort1.getHeartBeat();
-
-            Console.WriteLine("{DUAL} Comm Port 1 Open");
-
-            this.outputUDP = new TcpSerial(); //new UdpSerial() { ConfigRef = "SerialOutputPassUDP", Port = "14550" };//  new UdpSerialConnect() { ConfigRef = "SerialOutputPassUDPCL" };
-            this.listener = new TcpListener(System.Net.IPAddress.Any, 14558);
-            this.listener.Start(0);
-            this.listener.BeginAcceptTcpClient(new AsyncCallback(DoAcceptTcpClientCallback), this.listener);
-            Console.WriteLine("{DUAL} TCP Listener Open");
+            lbl_com1_status.Text = "Got Heartbeat.... ";
+            statusLine("{DUAL} Comm Port 1 Open");
 
 
+            lbl_TCP_Status.Text = "Starting TCP Connection...";
 
+            if (this.outputTCP == null || !this.outputTCP.IsOpen)
+            {
+                this.outputTCP = new TcpSerial(); //new UdpSerial() { ConfigRef = "SerialOutputPassUDP", Port = "14550" };//  new UdpSerialConnect() { ConfigRef = "SerialOutputPassUDPCL" };
+                this.listener = new TcpListener(System.Net.IPAddress.Any, 14558);
+                this.listener.Start(0);
+                this.listener.BeginAcceptTcpClient(new AsyncCallback(DoAcceptTcpClientCallback), this.listener);
+                statusLine("{DUAL} TCP Listener Open");
+
+                lbl_TCP_Status.Text = "TCP Service Started at port " + 14558;
+            } else
+            {
+                statusLine("TCP Already running?");
+            }
             this.start_thread();
-            Console.WriteLine("{DUAL} Main background thread started");
+            statusLine("{DUAL} Main background thread started");
 
 
 
@@ -163,11 +220,16 @@ namespace MissionPlanner
             // the console.
             TcpClient client = listener.EndAcceptTcpClient(ar);
 
-            ((TcpSerial)outputUDP).client = client;
+            ((TcpSerial)outputTCP).client = client;
 
             listener.BeginAcceptTcpClient(new AsyncCallback(DoAcceptTcpClientCallback), listener);
 
-            Console.WriteLine("{DUAL} TCP Client Connected " + listener.LocalEndpoint.ToString());
+            statusLine("{DUAL} TCP Client Connected " + listener.LocalEndpoint.ToString());
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.lbl_TCP_Status.Text = "Connected to: " + listener.LocalEndpoint.ToString();
+            });
         }
 
         private void mainloop()
@@ -188,10 +250,13 @@ namespace MissionPlanner
             try
             {
                 DateTime lastPrint = DateTime.Now;
+                MavlinkParse mlParser = new MavlinkParse();
 
                 this.threadrun = true;
                 while (this.threadrun)
                 {
+                    Thread.Sleep(1);
+
                     //this.comPort1.getHeartBeat();
                     DateTime startread = DateTime.Now;
 
@@ -219,43 +284,70 @@ namespace MissionPlanner
                             Console.WriteLine("{DUAL} COM 1 Open: " + this.comPort1.BaseStream.IsOpen + " " + this.comPort1.BaseStream.ToString() + " LQ: " + this.comPort1.MAV.cs.linkqualitygcs);
                             this.Invoke((MethodInvoker)delegate
                             {
-                                lbl_com1_status.Text = string.Format("LQ: {0} Packets RX: {1}, Packets Lost {2}, PRS: {3} PSS: {4}", comPort1.MAV.cs.linkqualitygcs, comPort1.MAV.packetsnotlost, comPort1.MAV.packetslost, packetRXCount1, packetSentCount1);
+                                String s = ""; 
+                                s =  string.Format("{0,-20}{1}\n", "Quality:",        comPort1.MAV.cs.linkqualitygcs);
+                                s += string.Format("{0,-20}{1}\n", "Packets RX: ",    comPort1.MAV.packetsnotlost);
+                                s += string.Format("{0,-20}{1}\n", "Packets Lost:",   comPort1.MAV.packetslost);
+                                s += string.Format("{0,-20}{1}\n", "RX / Sec: ",      packetRXCount1);
+                                s += string.Format("{0,-20}{1}\n", "TX / Sec: ",      packetSentCount1);
+                                lbl_com1_status.Text = s;
                                 packetRXCount1 = 0;
                                 packetSentCount1 = 0;
                             });
                         }
                         else
                         {
-                            Console.WriteLine("{DUAL} COMPORT1 BaseStream not open.");
+                            statusLine("{DUAL} COMPORT1 BaseStream not open.");
                         }
                         lastPrint = DateTime.Now;
                     }   
-                    //Thread.Sleep(1);
+                    
 
 
-                    while (outputUDP.BytesToRead > 0)
+                    while (outputTCP.BytesToRead > 0)
                     {
-                        Console.WriteLine("{DUAL} Have " + outputUDP.BytesToRead + " Bytes to write.");
-                        var len = outputUDP.BytesToRead;
+                        MAVLinkMessage msg = mlParser.ReadPacket(outputTCP.BaseStream);
 
-                        byte[] buf = new byte[len];
+                        if (msg != null)
+                        {
+                            this.comPort1.BaseStream.Write(msg.buffer, 0, msg.buffer.Length);
 
-                        len = outputUDP.Read(buf, 0, len);
+                            Console.WriteLine("{DUAL} Forwarding Message: " + msg.ToString());
 
-                        this.comPort1.BaseStream.Write(buf, 0, len); ;
+                            packetSentCount1++;
+                            com1_last_TX = DateTime.Now.AddMilliseconds(200);
+                        }
+                        //var len = outputTCP.BytesToRead;
+                        
+                        //byte[] buf = new byte[len];
+
+                        //len = outputTCP.Read(buf, 0, len);
+
+                        //this.comPort1.BaseStream.Write(buf, 0, len); ;
+                        
                     }
 
                     // Display Housekeeping
-                    led_com1.On = (DateTime.Now < com1_last_HB); 
-
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        this.led_com1_rx.On = (DateTime.Now < this.com1_last_HB);
+                        this.led_com1_tx.On = (DateTime.Now < this.com1_last_TX);
+                        this.led_com1_ftp.On = (DateTime.Now < this.com1_last_FTP);
+                        this.led_com1_ack.On = (DateTime.Now < this.com1_last_ACK);
+                        this.vpb_com1.Value = this.comPort1.MAV.cs.linkqualitygcs;
+                        if (this.vpb_com1.Value < 25) this.vpb_com1.maxline = 25; 
+                    });
 
                 }
             } catch (Exception ex)
             {
                 Console.WriteLine("Error in Dual Loop: " + ex);
+            } finally
+            {
+                this.threadrun = false;
             }
-            Thread.Sleep(25);
+            
         }
-
+        
     }
 }
