@@ -30,6 +30,11 @@ namespace MissionPlanner
         static Dual_Serial_Ports Instance;
 
         private ICommsSerial outputUDP; 
+        DateTime com1_last_HB = DateTime.Now;
+        DateTime com2_last_HB = DateTime.Now;
+        int packetRXCount1, packetRXCount2;  
+        int packetSentCount1, packetSentCount2;
+
 
         public Dual_Serial_Ports()
         {
@@ -59,6 +64,8 @@ namespace MissionPlanner
 
         private void packetReceivedHandler(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
         {
+            packetRXCount1++; 
+            if (mavLinkMessage.msgid == (uint)MAVLink.MAVLINK_MSG_ID.HEARTBEAT) com1_last_HB = DateTime.Now.AddMilliseconds(200);
             //Console.WriteLine("{DUAL} Handling: " + mavLinkMessage.ToString());
             if (outputUDP != null && outputUDP.IsOpen)
                 outputUDP.Write(mavLinkMessage.buffer,0,mavLinkMessage.buffer.Length);
@@ -66,7 +73,7 @@ namespace MissionPlanner
 
         private void packetSentHandler(object sender, MAVLink.MAVLinkMessage mavLinkMessage)
         {
-
+            packetSentCount1++;
         }
 
         private void BUT_connect_Click(object sender, EventArgs e)
@@ -104,7 +111,7 @@ namespace MissionPlanner
             }
 
             this.comPort1.OnPacketReceived += this.packetReceivedHandler;
-            //comPort1.OnPacketSent += packetSentHandler;
+            this.comPort1.OnPacketSent += this.packetSentHandler;
 
             // do the connect
             this.comPort1.Open(false, false, false);
@@ -180,7 +187,7 @@ namespace MissionPlanner
             //this.comPort1.giveComport = false;
             try
             {
-
+                DateTime lastPrint = DateTime.Now;
 
                 this.threadrun = true;
                 while (this.threadrun)
@@ -204,17 +211,25 @@ namespace MissionPlanner
                     }
                     this.comPort1.MAV.cs.UpdateCurrentSettings(null, false, this.comPort1, this.comPort1.MAV);
 
-                    // need to add a line here to make this part only run every few seconds. 
+                    // TODO: need to add a line here to make this part only run every few seconds. 
+                    if (lastPrint.Second != DateTime.Now.Second) { 
+                        if (this.comPort1 != null && this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen)
+                        {
 
-                    if (this.comPort1 != null && this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen)
-                    {
-
-                        Console.WriteLine("{DUAL} COM 1 Open: " + this.comPort1.BaseStream.IsOpen + " " + this.comPort1.BaseStream.ToString() + " LQ: " + this.comPort1.MAV.cs.linkqualitygcs);
-                    }
-                    else
-                    {
-                        Console.WriteLine("{DUAL} COMPORT1 BaseStream not open.");
-                    }
+                            Console.WriteLine("{DUAL} COM 1 Open: " + this.comPort1.BaseStream.IsOpen + " " + this.comPort1.BaseStream.ToString() + " LQ: " + this.comPort1.MAV.cs.linkqualitygcs);
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                lbl_com1_status.Text = string.Format("LQ: {0} Packets RX: {1}, Packets Lost {2}, PRS: {3} PSS: {4}", comPort1.MAV.cs.linkqualitygcs, comPort1.MAV.packetsnotlost, comPort1.MAV.packetslost, packetRXCount1, packetSentCount1);
+                                packetRXCount1 = 0;
+                                packetSentCount1 = 0;
+                            });
+                        }
+                        else
+                        {
+                            Console.WriteLine("{DUAL} COMPORT1 BaseStream not open.");
+                        }
+                        lastPrint = DateTime.Now;
+                    }   
                     //Thread.Sleep(1);
 
 
@@ -229,11 +244,17 @@ namespace MissionPlanner
 
                         this.comPort1.BaseStream.Write(buf, 0, len); ;
                     }
+
+                    // Display Housekeeping
+                    led_com1.On = (DateTime.Now < com1_last_HB); 
+
+
                 }
-            } catch
+            } catch (Exception ex)
             {
-                Console.WriteLine("Error in Dual Loop.");
+                Console.WriteLine("Error in Dual Loop: " + ex);
             }
+            Thread.Sleep(25);
         }
 
     }
