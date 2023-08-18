@@ -174,6 +174,21 @@ namespace MissionPlanner
 
         private void BUT_connect_Click(object sender, EventArgs e)
         {
+            if (BUT_connect1.Text == "Disconnect")
+            {
+                try
+                {
+                    if (this.comPort1 != null && this.comPort1.BaseStream.IsOpen)
+                    {
+                        statusLine("Closing COM 1"); 
+                        this.comPort1.Close();
+                        BUT_connect1.Text = "Connect";
+                    }
+                }
+                catch { }
+
+                return;
+            }
 
             lbl_com1_status.Text = "Connecting to " + CMB_serialport1.Text + "...";
             switch (CMB_serialport1.Text)
@@ -230,8 +245,10 @@ namespace MissionPlanner
                 return;
             }
 
+            
+
             this.comPort1.giveComport = false;
-            lbl_com1_status.Text = "Com Port OPened..."; 
+            lbl_com1_status.Text = "Com Port Opened..."; 
             this.comPort1.getHeartBeat();
             lbl_com1_status.Text = "Got Heartbeat.... ";
             statusLine("{DUAL} Comm Port 1 Open");
@@ -345,11 +362,19 @@ namespace MissionPlanner
                                 packetSentCount1 = 0;
 
                                 updateCOM1Plot(comPort1.MAV.cs.linkqualitygcs);
+
+                                this.BUT_connect1.Text = "Disconnect";
+
                             });
                         }
                         else
                         {
-                            statusLine("{DUAL} COMPORT1 BaseStream not open.");
+                            if (this.BUT_connect1.Text == "Disconnect")
+                            {
+                                statusLine("{DUAL} WARNING! COMPORT1 BaseStream not open.");
+                            }
+                            //statusLine("{DUAL} COMPORT1 BaseStream not open.");
+                            this.BUT_connect1.Text = "Connect";
                         }
                         lastPrint = DateTime.Now;
                     }   
