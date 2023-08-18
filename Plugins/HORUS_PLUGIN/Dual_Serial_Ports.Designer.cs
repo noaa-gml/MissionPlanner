@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.CMB_baudrate = new System.Windows.Forms.ComboBox();
             this.BUT_connect = new MissionPlanner.Controls.MyButton();
             this.CMB_serialport = new System.Windows.Forms.ComboBox();
@@ -40,6 +41,7 @@
             this.lbl_TCP_Status = new System.Windows.Forms.Label();
             this.led_com1_ack = new Bulb.LedBulb();
             this.rt_log = new System.Windows.Forms.RichTextBox();
+            this.zed_com1 = new ZedGraph.ZedGraphControl();
             this.SuspendLayout();
             // 
             // CMB_baudrate
@@ -98,7 +100,7 @@
             this.led_com1_rx.Location = new System.Drawing.Point(61, 36);
             this.led_com1_rx.Name = "led_com1_rx";
             this.led_com1_rx.On = false;
-            this.led_com1_rx.Size = new System.Drawing.Size(109, 36);
+            this.led_com1_rx.Size = new System.Drawing.Size(45, 36);
             this.led_com1_rx.TabIndex = 19;
             this.led_com1_rx.Text = "ledBulb1";
             // 
@@ -108,7 +110,7 @@
             this.led_com1_tx.Location = new System.Drawing.Point(112, 36);
             this.led_com1_tx.Name = "led_com1_tx";
             this.led_com1_tx.On = false;
-            this.led_com1_tx.Size = new System.Drawing.Size(109, 36);
+            this.led_com1_tx.Size = new System.Drawing.Size(45, 36);
             this.led_com1_tx.TabIndex = 20;
             this.led_com1_tx.Text = "ledBulb1";
             // 
@@ -118,13 +120,13 @@
             this.led_com1_ftp.Location = new System.Drawing.Point(163, 36);
             this.led_com1_ftp.Name = "led_com1_ftp";
             this.led_com1_ftp.On = false;
-            this.led_com1_ftp.Size = new System.Drawing.Size(58, 36);
+            this.led_com1_ftp.Size = new System.Drawing.Size(43, 36);
             this.led_com1_ftp.TabIndex = 21;
             this.led_com1_ftp.Text = "ledBulb1";
             // 
             // vpb_com1
             // 
-            this.vpb_com1.DrawLabel = true;
+            this.vpb_com1.DrawLabel = false;
             this.vpb_com1.Label = null;
             this.vpb_com1.Location = new System.Drawing.Point(13, 36);
             this.vpb_com1.maxline = 0;
@@ -138,7 +140,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(69, 17);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(224, 20);
+            this.label1.Size = new System.Drawing.Size(179, 16);
             this.label1.TabIndex = 24;
             this.label1.Text = "HB          TX          FTP        ACK";
             // 
@@ -146,7 +148,7 @@
             // 
             this.lbl_TCP_Status.AutoSize = true;
             this.lbl_TCP_Status.Font = new System.Drawing.Font("MS Reference Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_TCP_Status.Location = new System.Drawing.Point(10, 567);
+            this.lbl_TCP_Status.Location = new System.Drawing.Point(10, 1022);
             this.lbl_TCP_Status.Name = "lbl_TCP_Status";
             this.lbl_TCP_Status.Size = new System.Drawing.Size(82, 16);
             this.lbl_TCP_Status.TabIndex = 25;
@@ -158,23 +160,39 @@
             this.led_com1_ack.Location = new System.Drawing.Point(212, 36);
             this.led_com1_ack.Name = "led_com1_ack";
             this.led_com1_ack.On = false;
-            this.led_com1_ack.Size = new System.Drawing.Size(58, 36);
+            this.led_com1_ack.Size = new System.Drawing.Size(41, 36);
             this.led_com1_ack.TabIndex = 26;
             this.led_com1_ack.Text = "ledBulb1";
             // 
             // rt_log
             // 
             this.rt_log.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rt_log.Location = new System.Drawing.Point(13, 356);
+            this.rt_log.Location = new System.Drawing.Point(13, 823);
             this.rt_log.Name = "rt_log";
             this.rt_log.Size = new System.Drawing.Size(717, 196);
             this.rt_log.TabIndex = 27;
             this.rt_log.Text = "";
             // 
+            // zed_com1
+            // 
+            this.zed_com1.Location = new System.Drawing.Point(13, 188);
+            this.zed_com1.Name = "zed_com1";
+            this.zed_com1.ScrollGrace = 0D;
+            this.zed_com1.ScrollMaxX = 0D;
+            this.zed_com1.ScrollMaxY = 0D;
+            this.zed_com1.ScrollMaxY2 = 0D;
+            this.zed_com1.ScrollMinX = 0D;
+            this.zed_com1.ScrollMinY = 0D;
+            this.zed_com1.ScrollMinY2 = 0D;
+            this.zed_com1.Size = new System.Drawing.Size(716, 232);
+            this.zed_com1.TabIndex = 28;
+            // 
             // Dual_Serial_Ports
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(741, 1048);
+            this.Controls.Add(this.zed_com1);
             this.Controls.Add(this.rt_log);
             this.Controls.Add(this.led_com1_ack);
             this.Controls.Add(this.lbl_TCP_Status);
@@ -188,7 +206,7 @@
             this.Controls.Add(this.BUT_connect);
             this.Controls.Add(this.CMB_serialport);
             this.Name = "Dual_Serial_Ports";
-            this.Size = new System.Drawing.Size(747, 596);
+            this.Text = "HORUS Dual Serial Port Manager";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -207,5 +225,6 @@
         private System.Windows.Forms.Label lbl_TCP_Status;
         private Bulb.LedBulb led_com1_ack;
         private System.Windows.Forms.RichTextBox rt_log;
+        private ZedGraph.ZedGraphControl zed_com1;
     }
 }

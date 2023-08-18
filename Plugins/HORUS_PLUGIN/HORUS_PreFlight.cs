@@ -16,13 +16,20 @@ namespace MissionPlanner.Controls
         private int messagecount;
         private Plugin.PluginHost _host = null;
         private HORUS_Panel _panel = null;
-
+        private Dual_Serial_Ports _dsp = null;
         public HORUS_PreFlight()
         {
             InitializeComponent();
 
             timer1.Start();
             timer2.Start();
+
+
+
+
+
+
+
         }
 
 
@@ -54,6 +61,8 @@ namespace MissionPlanner.Controls
 
                 }
             }
+
+            Settings.Instance["horus_panel_visible"] = cb_openHORUSPanel.Checked.ToString();
         }
 
         public void setHost(Plugin.PluginHost host)
@@ -161,6 +170,12 @@ namespace MissionPlanner.Controls
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (Settings.Instance.GetBoolean("horus_panel_visible") && _host != null && _host.comPort != null && _host.comPort.MAV != null)
+            {
+                cb_openHORUSPanel.Checked = true;
+            }
+
+
             try
             {
                 bool isModeReady = (MainV2.comPort.MAV.cs.mode == "Manual" || MainV2.comPort.MAV.cs.mode == "FBWA" || MainV2.comPort.MAV.cs.mode == "FBWB");
@@ -351,9 +366,14 @@ namespace MissionPlanner.Controls
 
         }
 
-
-
-
+        private void but_openDSP_Click(object sender, EventArgs e)
+        {
+            if (_dsp ==  null)
+            {
+                _dsp = new Dual_Serial_Ports();
+            }
+            _dsp.Show();
+        }
     }
 }
 

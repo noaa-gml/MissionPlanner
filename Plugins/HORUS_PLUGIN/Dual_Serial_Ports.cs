@@ -15,10 +15,12 @@ using System.Threading;
 using System.Windows.Forms;
 using Xamarin.Essentials;
 using static MAVLink;
+using ZedGraph;
+using System.Drawing;
 
 namespace MissionPlanner
 {
-    public partial class Dual_Serial_Ports : UserControl
+    public partial class Dual_Serial_Ports : Form
     {
 
         private MAVLinkInterface comPort1 = new MAVLinkInterface();
@@ -38,6 +40,7 @@ namespace MissionPlanner
         int packetRXCount1, packetRXCount2;  
         int packetSentCount1, packetSentCount2;
 
+        public RollingPointPairList com1_qos = new RollingPointPairList(600);
 
         public Dual_Serial_Ports()
         {
@@ -51,6 +54,23 @@ namespace MissionPlanner
             CMB_serialport.Items.Add("UDP Client");
 
 
+            zed_com1.GraphPane.Title.Text = "COM1 QOS";
+            zed_com1.GraphPane.AddCurve("QOS", com1_qos, Color.Yellow,SymbolType.None);
+            zed_com1.GraphPane.Legend.IsVisible = false;
+            zed_com1.GraphPane.XAxis.Type = AxisType.Date;
+            zed_com1.GraphPane.YAxis.Scale.Min = 0;
+            zed_com1.GraphPane.YAxis.Scale.Max = 120;
+            zed_com1.GraphPane.YAxis.Title.IsVisible = false;
+            zed_com1.GraphPane.XAxis.Title.IsVisible = false;
+
+        }
+
+        private void updateCOM1Plot(double qos_val)
+        {
+            if (qos_val == null) return;
+            com1_qos.Add((double)new XDate(DateTime.Now), (double)qos_val);
+            zed_com1.AxisChange();
+            zed_com1.Invalidate();
         }
 
         private void start_thread()
@@ -293,6 +313,8 @@ namespace MissionPlanner
                                 lbl_com1_status.Text = s;
                                 packetRXCount1 = 0;
                                 packetSentCount1 = 0;
+
+                                updateCOM1Plot(comPort1.MAV.cs.linkqualitygcs);
                             });
                         }
                         else
