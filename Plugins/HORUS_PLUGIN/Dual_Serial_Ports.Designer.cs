@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.CMB_baudrate = new System.Windows.Forms.ComboBox();
+            this.CMB_baudrate1 = new System.Windows.Forms.ComboBox();
             this.BUT_connect = new MissionPlanner.Controls.MyButton();
-            this.CMB_serialport = new System.Windows.Forms.ComboBox();
+            this.CMB_serialport1 = new System.Windows.Forms.ComboBox();
             this.lbl_com1_status = new System.Windows.Forms.Label();
             this.led_com1_rx = new Bulb.LedBulb();
             this.led_com1_tx = new Bulb.LedBulb();
@@ -44,11 +44,11 @@
             this.zed_com1 = new ZedGraph.ZedGraphControl();
             this.SuspendLayout();
             // 
-            // CMB_baudrate
+            // CMB_baudrate1
             // 
-            this.CMB_baudrate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CMB_baudrate.FormattingEnabled = true;
-            this.CMB_baudrate.Items.AddRange(new object[] {
+            this.CMB_baudrate1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CMB_baudrate1.FormattingEnabled = true;
+            this.CMB_baudrate1.Items.AddRange(new object[] {
             "4800",
             "9600",
             "14400",
@@ -57,11 +57,11 @@
             "38400",
             "57600",
             "115200"});
-            this.CMB_baudrate.Location = new System.Drawing.Point(61, 111);
-            this.CMB_baudrate.Margin = new System.Windows.Forms.Padding(4);
-            this.CMB_baudrate.Name = "CMB_baudrate";
-            this.CMB_baudrate.Size = new System.Drawing.Size(187, 24);
-            this.CMB_baudrate.TabIndex = 16;
+            this.CMB_baudrate1.Location = new System.Drawing.Point(61, 111);
+            this.CMB_baudrate1.Margin = new System.Windows.Forms.Padding(4);
+            this.CMB_baudrate1.Name = "CMB_baudrate1";
+            this.CMB_baudrate1.Size = new System.Drawing.Size(187, 24);
+            this.CMB_baudrate1.TabIndex = 16;
             // 
             // BUT_connect
             // 
@@ -75,15 +75,15 @@
             this.BUT_connect.UseVisualStyleBackColor = true;
             this.BUT_connect.Click += new System.EventHandler(this.BUT_connect_Click);
             // 
-            // CMB_serialport
+            // CMB_serialport1
             // 
-            this.CMB_serialport.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CMB_serialport.FormattingEnabled = true;
-            this.CMB_serialport.Location = new System.Drawing.Point(61, 79);
-            this.CMB_serialport.Margin = new System.Windows.Forms.Padding(4);
-            this.CMB_serialport.Name = "CMB_serialport";
-            this.CMB_serialport.Size = new System.Drawing.Size(187, 24);
-            this.CMB_serialport.TabIndex = 14;
+            this.CMB_serialport1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CMB_serialport1.FormattingEnabled = true;
+            this.CMB_serialport1.Location = new System.Drawing.Point(61, 79);
+            this.CMB_serialport1.Margin = new System.Windows.Forms.Padding(4);
+            this.CMB_serialport1.Name = "CMB_serialport1";
+            this.CMB_serialport1.Size = new System.Drawing.Size(187, 24);
+            this.CMB_serialport1.TabIndex = 14;
             // 
             // lbl_com1_status
             // 
@@ -202,9 +202,9 @@
             this.Controls.Add(this.led_com1_tx);
             this.Controls.Add(this.led_com1_rx);
             this.Controls.Add(this.lbl_com1_status);
-            this.Controls.Add(this.CMB_baudrate);
+            this.Controls.Add(this.CMB_baudrate1);
             this.Controls.Add(this.BUT_connect);
-            this.Controls.Add(this.CMB_serialport);
+            this.Controls.Add(this.CMB_serialport1);
             this.Name = "Dual_Serial_Ports";
             this.Text = "HORUS Dual Serial Port Manager";
             this.ResumeLayout(false);
@@ -213,9 +213,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox CMB_baudrate;
+        private System.Windows.Forms.ComboBox CMB_baudrate1;
         private Controls.MyButton BUT_connect;
-        private System.Windows.Forms.ComboBox CMB_serialport;
+        private System.Windows.Forms.ComboBox CMB_serialport1;
         private System.Windows.Forms.Label lbl_com1_status;
         private Bulb.LedBulb led_com1_rx;
         private Bulb.LedBulb led_com1_tx;

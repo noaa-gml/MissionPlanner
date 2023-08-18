@@ -47,12 +47,40 @@ namespace MissionPlanner
             InitializeComponent();
             Instance = this;
 
-            CMB_serialport.Items.AddRange(SerialPort.GetPortNames());
-            CMB_serialport.Items.Add("TCP Host - 14550");
-            CMB_serialport.Items.Add("TCP Client");
-            CMB_serialport.Items.Add("UDP Host - 14550");
-            CMB_serialport.Items.Add("UDP Client");
+            CMB_serialport1.Items.AddRange(SerialPort.GetPortNames());
+            CMB_serialport1.Items.Add("TCP Host - 14550");
+            CMB_serialport1.Items.Add("TCP Client");
+            CMB_serialport1.Items.Add("UDP Host - 14550");
+            CMB_serialport1.Items.Add("UDP Client");
 
+
+            // load last saved connection settings
+            string temp = Settings.Instance["dsp_com1_port"];
+            if (!string.IsNullOrEmpty(temp))
+            {
+                //statusLine("COM1 Port Setting to: " + temp);
+                CMB_serialport1.SelectedIndex = CMB_serialport1.FindString(temp);
+                if (CMB_serialport1.SelectedIndex == -1)
+                {
+                    CMB_serialport1.Text = temp; // allows ports that dont exist - yet
+                }
+
+            }
+
+            string temp2 = Settings.Instance["dsp_com1_baud"];
+            if (!string.IsNullOrEmpty(temp2))
+            {
+                //statusLine("COM1 Baud Setting to: " + temp2);
+                var idx = CMB_baudrate1.FindString(temp2);
+                if (idx == -1)
+                {
+                    CMB_baudrate1.Text = temp2;
+                }
+                else
+                {
+                    CMB_baudrate1.SelectedIndex = idx;
+                }
+            }
 
             zed_com1.GraphPane.Title.Text = "COM1 QOS";
             zed_com1.GraphPane.AddCurve("QOS", com1_qos, Color.Yellow,SymbolType.None);
@@ -147,8 +175,8 @@ namespace MissionPlanner
         private void BUT_connect_Click(object sender, EventArgs e)
         {
 
-            lbl_com1_status.Text = "Connecting to " + CMB_serialport.Text + "...";
-            switch (CMB_serialport.Text)
+            lbl_com1_status.Text = "Connecting to " + CMB_serialport1.Text + "...";
+            switch (CMB_serialport1.Text)
             {
                 case "TCP":
                     this.comPort1.BaseStream = new TcpSerial();
@@ -169,9 +197,9 @@ namespace MissionPlanner
 
             try
             {
-                this.comPort1.BaseStream.PortName = CMB_serialport.Text;
-                if (CMB_baudrate.Text != "" && CMB_baudrate.Text != "0" && CMB_baudrate.Text.IsNumber())
-                    comPort1.BaseStream.BaudRate = int.Parse(CMB_baudrate.Text);
+                this.comPort1.BaseStream.PortName = CMB_serialport1.Text;
+                if (CMB_baudrate1.Text != "" && CMB_baudrate1.Text != "0" && CMB_baudrate1.Text.IsNumber())
+                    comPort1.BaseStream.BaudRate = int.Parse(CMB_baudrate1.Text);
             }
             catch (Exception exp)
             {
@@ -208,6 +236,8 @@ namespace MissionPlanner
             lbl_com1_status.Text = "Got Heartbeat.... ";
             statusLine("{DUAL} Comm Port 1 Open");
 
+            Settings.Instance["dsp_com1_port"] = CMB_serialport1.Text;
+            Settings.Instance["dsp_com1_baud"] = CMB_baudrate1.Text;
 
             lbl_TCP_Status.Text = "Starting TCP Connection...";
 
