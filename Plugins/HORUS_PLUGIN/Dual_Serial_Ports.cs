@@ -17,6 +17,8 @@ using Xamarin.Essentials;
 using static MAVLink;
 using ZedGraph;
 using System.Drawing;
+using System.Collections.Concurrent;
+using System.Collections;
 
 namespace MissionPlanner
 {
@@ -48,6 +50,8 @@ namespace MissionPlanner
 
         public RollingPointPairList com1_qos = new RollingPointPairList(600);
         public RollingPointPairList com2_qos = new RollingPointPairList(600);
+
+        ConcurrentQueue<MAVLinkMessage> cmdQueue = new ConcurrentQueue<MAVLinkMessage>();
 
         public Dual_Serial_Ports()
         {
@@ -249,29 +253,32 @@ namespace MissionPlanner
                 return;
             }
 
+            statusLine("Connecting to COM 1...");
+
             if (Instance.comPort1.BaseStream != null && Instance.comPort1.BaseStream.IsOpen)
             {
                 Instance.statusLine("COM1 is already Open");
                 Console.WriteLine("{DUAL} COM1 is already Open.");
+                return;
             }
 
             Instance.lbl_com1_status.Text = "Connecting to " + CMB_serialport1.Text + "...";
             switch (CMB_serialport1.Text)
             {
                 case "TCP":
-                    this.comPort1.BaseStream = new TcpSerial();
+                    Instance.comPort1.BaseStream = new TcpSerial();
                     break;
                 case "UDP":
-                    this.comPort1.BaseStream = new UdpSerial();
+                    Instance.comPort1.BaseStream = new UdpSerial();
                     break;
                 case "WS":
-                    this.comPort1.BaseStream = new WebSocket();
+                    Instance.comPort1.BaseStream = new WebSocket();
                     break;
                 case "UDPCl":
-                    this.comPort1.BaseStream = new UdpSerialConnect();
+                    Instance.comPort1.BaseStream = new UdpSerialConnect();
                     break;
                 default:
-                    this.comPort1.BaseStream = new SerialPort();
+                    Instance.comPort1.BaseStream = new SerialPort();
                     break;
             }
 
@@ -316,7 +323,7 @@ namespace MissionPlanner
             Instance.lbl_com1_status.Text = "Com Port Opened..."; 
             Instance.comPort1.getHeartBeat();
             Instance.lbl_com1_status.Text = "Got Heartbeat.... ";
-            statusLine("{DUAL} Comm Port 1 Open");
+            statusLine("{DUAL} Comm Port 1 Got Heartbeat");
 
             Settings.Instance["dsp_com1_port"] = CMB_serialport1.Text;
             Settings.Instance["dsp_com1_baud"] = CMB_baudrate1.Text;
@@ -666,30 +673,58 @@ namespace MissionPlanner
                     }
 
 
-                    DateTime endWrite = DateTime.Now.AddMilliseconds(100);
-                    while (outputTCP.BytesToRead > 0 && DateTime.Now < endWrite)
+                    
+                    while (outputTCP.BytesToRead > 0)
                     {
-                        MAVLinkMessage msg = mlParser.ReadPacket(outputTCP.BaseStream);
+                        //MAVLinkMessage msg = mlParser.ReadPacket(outputTCP.BaseStream);
 
-                        if (msg != null)
-                        {
-                            Console.WriteLine("{DUAL} Forwarding Message: " + msg.ToString());
-                            this.comPort1.BaseStream.Write(msg.buffer, 0, msg.buffer.Length);
+                        //if (msg != null)
+                        //{
+                        //    Console.WriteLine("{DUAL} Forwarding Message: " + msg.ToString());
+                        //    //this.comPort1.BaseStream.Write(msg.buffer, 0, msg.buffer.Length);
+                        //    cmdQueue.Enqueue(msg);
 
-                            
 
-                            packetSentCount1++;
-                            com1_last_TX = DateTime.Now.AddMilliseconds(200);
-                        }
-                        //var len = outputTCP.BytesToRead;
-                        
-                        //byte[] buf = new byte[len];
+                        //    //packetSentCount1++;
+                        //    //com1_last_TX = DateTime.Now.AddMilliseconds(200);
+                        //}
+                        var len = outputTCP.BytesToRead;
 
-                        //len = outputTCP.Read(buf, 0, len);
+                        byte[] buf = new byte[len];
 
-                        //this.comPort1.BaseStream.Write(buf, 0, len); ;
-                        
+                        len = outputTCP.Read(buf, 0, len);
+
+                        this.comPort1.BaseStream.Write(buf, 0, len); ;
+
                     }
+
+                    //DateTime endWrite = DateTime.Now.AddMilliseconds(100);
+                    //while (cmdQueue.Count > 0 && DateTime.Now < endWrite)
+                    //{
+                    //    Console.WriteLine("{DUAL} OUTPUT QUEUE Count: " + cmdQueue.Count);
+                    //    try
+                    //    {
+                    //        MAVLinkMessage msg = null; 
+                             
+                    //        if (this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen)
+                    //        {
+                    //            if (this.comPort1.giveComport == false)
+                    //            {
+                                    
+                    //                cmdQueue.TryDequeue(out msg);
+                    //                Console.WriteLine("{DUAL} -------------- Pretending to Write: " + msg.ToString());
+                    //                packetSentCount1++;
+                    //                com1_last_TX = DateTime.Now.AddMilliseconds(200);
+                    //            }
+                    //        } else
+                    //        {
+                    //            while (cmdQueue.TryDequeue(out msg)) ;
+                    //        }
+                    //    } catch (Exception ex)
+                    //    {
+                    //        Console.WriteLine("{DUAL} Exception in cmds write out: " + ex.ToString());
+                    //    }
+                    //}
 
 
                 }
