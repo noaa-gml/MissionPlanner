@@ -64,6 +64,7 @@
             this.led_com1_cmd = new Bulb.LedBulb();
             this.BUT_restart_TCP = new MissionPlanner.Controls.MyButton();
             this.BUT_connetMP = new MissionPlanner.Controls.MyButton();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // CMB_baudrate1
@@ -378,7 +379,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(285, 205);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(46, 20);
+            this.label9.Size = new System.Drawing.Size(37, 16);
             this.label9.TabIndex = 48;
             this.label9.Text = "CMD";
             // 
@@ -397,7 +398,7 @@
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(286, 17);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(46, 20);
+            this.label10.Size = new System.Drawing.Size(37, 16);
             this.label10.TabIndex = 46;
             this.label10.Text = "CMD";
             // 
@@ -434,6 +435,10 @@
             this.BUT_connetMP.TextColorNotEnabled = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(87)))), ((int)(((byte)(4)))));
             this.BUT_connetMP.UseVisualStyleBackColor = true;
             this.BUT_connetMP.Click += new System.EventHandler(this.BUT_connetMP_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Dual_Serial_Ports
             // 
@@ -518,5 +523,6 @@
         private Bulb.LedBulb led_com1_cmd;
         private Controls.MyButton BUT_restart_TCP;
         private Controls.MyButton BUT_connetMP;
+        private System.Windows.Forms.Timer timer1;
     }
 }

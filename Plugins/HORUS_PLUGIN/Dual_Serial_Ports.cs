@@ -54,6 +54,7 @@ namespace MissionPlanner
             InitializeComponent();
             Instance = this;
 
+            timer1.Start();
 
             // INIT COM1 Drop downs
 
@@ -462,6 +463,28 @@ namespace MissionPlanner
 
         }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+
+                // COM1
+                this.led_com1_rx.On = (DateTime.Now < this.com1_last_HB);
+                this.led_com1_tx.On = (DateTime.Now < this.com1_last_TX);
+                this.led_com1_ftp.On = (DateTime.Now < this.com1_last_FTP);
+                this.led_com1_ack.On = (DateTime.Now < this.com1_last_ACK);
+                this.vpb_com1.Value = this.comPort1.MAV.cs.linkqualitygcs;
+                if (this.vpb_com1.Value < 25) this.vpb_com1.maxline = 25;
+
+                //COM2
+                this.led_com2_rx.On = (DateTime.Now < this.com2_last_HB);
+                this.led_com2_tx.On = (DateTime.Now < this.com2_last_TX);
+                this.led_com2_ftp.On = (DateTime.Now < this.com2_last_FTP);
+                this.led_com2_ack.On = (DateTime.Now < this.com2_last_ACK);
+                this.vpb_com2.Value = this.comPort2.MAV.cs.linkqualitygcs;
+                if (this.vpb_com2.Value < 25) this.vpb_com2.maxline = 25;
+
+        }
+
         private void setupTCPConnection()
         {
             try
@@ -518,58 +541,51 @@ namespace MissionPlanner
 
                 this.threadrun = true;
 
-                bool com1ThisRun = true;
-
                 while (this.threadrun)
                 {
                     Thread.Sleep(1);
 
-                    //this.comPort1.getHeartBeat();
-                    DateTime startread = DateTime.Now;
+
 
                     // must be open, we have bytes, we are not yielding the port,
                     // the thread is meant to be running and we only spend 1 seconds max in this read loop
                     // Let's flip flop this so that every other read cycle we switch com ports to read. 
                     // Exception is that comPort1 has over 400 bytes to read (shoudl be rare)
 
-                    if (this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen && this.comPort1.BaseStream.BytesToRead > 400) com1ThisRun = true;
+                    DateTime endRead = DateTime.Now.AddMilliseconds(100);
 
 
-                    //if (com1ThisRun)
-                    //{
 
-                        while (this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen && this.comPort1.BaseStream.BytesToRead > 10 &&
-                               this.comPort1.giveComport == false && startread.AddSeconds(1) > DateTime.Now)
+
+                    // give 100 ms to com1
+                    while (this.comPort1.BaseStream != null && this.comPort1.BaseStream.IsOpen && this.comPort1.BaseStream.BytesToRead > 10 &&
+                            this.comPort1.giveComport == false && DateTime.Now < endRead)
+                    {
+                        try
                         {
-                            try
-                            {
-                                this.comPort1.readPacket();
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("{DUAL} Read Packet Error: " + ex);
-                            }
+                            this.comPort1.readPacket();
                         }
-                        this.comPort1.MAV.cs.UpdateCurrentSettings(null, false, this.comPort1, this.comPort1.MAV);
-                        com1ThisRun = false;
-                    //} else
-                    //{
-                        while (this.comPort2.BaseStream != null &&  this.comPort2.BaseStream.IsOpen && this.comPort2.BaseStream.BytesToRead > 10 &&
-                               this.comPort2.giveComport == false && startread.AddSeconds(1) > DateTime.Now)
+                        catch (Exception ex)
                         {
-                            try
-                            {
-                                this.comPort2.readPacket();
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("{DUAL} Read Packet Error: " + ex);
-                            }
+                            Console.WriteLine("{DUAL} Read Packet Error: " + ex);
                         }
-                        this.comPort2.MAV.cs.UpdateCurrentSettings(null, false, this.comPort2, this.comPort2.MAV);
-                        com1ThisRun = true;
-                    //}
+                    }
+                    this.comPort1.MAV.cs.UpdateCurrentSettings(null, false, this.comPort1, this.comPort1.MAV);
 
+                    endRead = DateTime.Now.AddMilliseconds(100);
+                    while (this.comPort2.BaseStream != null &&  this.comPort2.BaseStream.IsOpen && this.comPort2.BaseStream.BytesToRead > 10 &&
+                            this.comPort2.giveComport == false && DateTime.Now < endRead)
+                    {
+                        try
+                        {
+                            this.comPort2.readPacket();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("{DUAL} Read Packet Error: " + ex);
+                        }
+                    }
+                    this.comPort2.MAV.cs.UpdateCurrentSettings(null, false, this.comPort2, this.comPort2.MAV);
 
                     ushort lq1 = 0; 
                     ushort lq2 = 0;
@@ -650,16 +666,17 @@ namespace MissionPlanner
                     }
 
 
-
-                    while (outputTCP.BytesToRead > 0)
+                    DateTime endWrite = DateTime.Now.AddMilliseconds(100);
+                    while (outputTCP.BytesToRead > 0 && DateTime.Now < endWrite)
                     {
                         MAVLinkMessage msg = mlParser.ReadPacket(outputTCP.BaseStream);
 
                         if (msg != null)
                         {
+                            Console.WriteLine("{DUAL} Forwarding Message: " + msg.ToString());
                             this.comPort1.BaseStream.Write(msg.buffer, 0, msg.buffer.Length);
 
-                            Console.WriteLine("{DUAL} Forwarding Message: " + msg.ToString());
+                            
 
                             packetSentCount1++;
                             com1_last_TX = DateTime.Now.AddMilliseconds(200);
@@ -674,25 +691,6 @@ namespace MissionPlanner
                         
                     }
 
-                    // Display Housekeeping
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        // COM1
-                        this.led_com1_rx.On = (DateTime.Now < this.com1_last_HB);
-                        this.led_com1_tx.On = (DateTime.Now < this.com1_last_TX);
-                        this.led_com1_ftp.On = (DateTime.Now < this.com1_last_FTP);
-                        this.led_com1_ack.On = (DateTime.Now < this.com1_last_ACK);
-                        this.vpb_com1.Value = this.comPort1.MAV.cs.linkqualitygcs;
-                        if (this.vpb_com1.Value < 25) this.vpb_com1.maxline = 25;
-
-                        //COM2
-                        this.led_com2_rx.On = (DateTime.Now < this.com2_last_HB);
-                        this.led_com2_tx.On = (DateTime.Now < this.com2_last_TX);
-                        this.led_com2_ftp.On = (DateTime.Now < this.com2_last_FTP);
-                        this.led_com2_ack.On = (DateTime.Now < this.com2_last_ACK);
-                        this.vpb_com2.Value = this.comPort2.MAV.cs.linkqualitygcs;
-                        if (this.vpb_com2.Value < 25) this.vpb_com2.maxline = 25;
-                    });
 
                 }
             } catch (Exception ex)
