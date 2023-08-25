@@ -543,7 +543,7 @@ namespace MissionPlanner
             try
             {
                 DateTime lastPrint = DateTime.Now;
-                MavlinkParse mlParser = new MavlinkParse();
+                MavlinkParse mlParser1,mlParser2,mlParserCMD = new MavlinkParse();
 
 
                 this.threadrun = true;
