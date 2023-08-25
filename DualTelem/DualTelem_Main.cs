@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using MissionPlanner.Comms;
 using static MAVLink;
+using ZedGraph; 
 
 namespace DualTelem
 {
@@ -80,7 +81,8 @@ namespace DualTelem
 
 
         MovingAverage[] lqAvg = new MovingAverage[2];
-
+        public RollingPointPairList com1_qos = new RollingPointPairList(600);
+        public RollingPointPairList com2_qos = new RollingPointPairList(600);
 
         public DualTelem_Main()
         {
@@ -94,6 +96,16 @@ namespace DualTelem
 
             lqAvg[0] = new MovingAverage();
             lqAvg[1] = new MovingAverage();
+
+            zed_qos_plot.GraphPane.Title.Text = "QOS - COM1 (Blue) COM2 (green)";
+            zed_qos_plot.GraphPane.AddCurve("QOS", com1_qos, Color.Blue, SymbolType.None);
+            zed_qos_plot.GraphPane.AddCurve("QOS", com2_qos, Color.Green, SymbolType.None);
+            zed_qos_plot.GraphPane.Legend.IsVisible = false;
+            zed_qos_plot.GraphPane.XAxis.Type = AxisType.Date;
+            zed_qos_plot.GraphPane.YAxis.Scale.Min = 0;
+            zed_qos_plot.GraphPane.YAxis.Scale.Max = 120;
+            zed_qos_plot.GraphPane.YAxis.Title.IsVisible = false;
+            zed_qos_plot.GraphPane.XAxis.Title.IsVisible = false;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -173,6 +185,20 @@ namespace DualTelem
             // Update Slow Screen Elements
             bar_com1.Value = (int) linkQOS[0];
             bar_com2.Value = (int)linkQOS[1];
+
+            updateCOMPlot(linkQOS[0], linkQOS[1]);
+        }
+
+        private void updateCOMPlot(double qos_val1, double qos_val2)
+        {
+            if (qos_val1 != null) com1_qos.Add((double)new XDate(DateTime.Now), (double)qos_val1);
+            else com1_qos.Add((double)new XDate(DateTime.Now), (double)0);
+
+            if (qos_val2 != null) com2_qos.Add((double)new XDate(DateTime.Now), (double)qos_val2);
+            else com2_qos.Add((double)new XDate(DateTime.Now), (double)0);
+
+            zed_qos_plot.AxisChange();
+            zed_qos_plot.Invalidate();
         }
 
 
@@ -358,6 +384,11 @@ namespace DualTelem
                             if (comNum == 1) got_hb1 = true; else got_hb2 = true;
                         }
 
+                        if (msg.msgid == (uint)MAVLink.MAVLINK_MSG_ID.FILE_TRANSFER_PROTOCOL)
+                            if (comNum == 1) got_ftp1 = true; else got_ftp2 = true;
+
+                        if (msg.msgid == (uint)MAVLink.MAVLINK_MSG_ID.COMMAND_ACK)
+                            if (comNum == 1) got_ack1 = true; else got_ack2 = true;
 
                         //lastSeq[msg.compid] = msg.seq;
                     }
