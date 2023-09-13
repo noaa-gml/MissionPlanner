@@ -299,16 +299,15 @@ namespace MissionPlanner
                 lblGliderCalcs.Text += "VS:".PadRight(10) + _host.cs.verticalspeed_fpm.ToString("0.0") + " fpm " + (_host.cs.verticalspeed_fpm* 0.00508).ToString("0.0") + " m/s" + "\n";
                 if (_host.cs.vz > 0)
                 {
-                    if (CurrentState.DistanceUnit.ToLower() == "ft")
+                    if (CurrentState.DistanceUnit.ToLower() != "ft")
                     {
-                        lblGliderCalcs.Text += "Units must be set\n to metric to calc";
+                        lblGliderCalcs.Text += "Units must be set\n to imperial to calc";
                     }
                     else
                     {
                         // assumes mph, fpm for now
-                        // dist (m) / gs (m/s) / 60.0 (s/m) 
-                        lblGliderCalcs.Text += "GStoHOME:".PadRight(10) + ((_host.cs.DistToHome / _host.cs.groundspeed) / 60.0).ToString("0.0") + " min\n";
-                        lblGliderCalcs.Text += "VZtoHOME:".PadRight(10) + ((_host.cs.alt / -_host.cs.vz) / 60.0).ToString("0.0") + " min\n";
+                        lblGliderCalcs.Text += "GStoHOME:".PadRight(10) + (((_host.cs.DistToHome * ft2miles) / _host.cs.groundspeed) * 60.0).ToString("0.0") + " min\n";
+                        lblGliderCalcs.Text += "VZtoHOME:".PadRight(10) + ((_host.cs.alt / -_host.cs.verticalspeed_fpm)).ToString("0.0") + " min\n";
                     }
                 }
                 
