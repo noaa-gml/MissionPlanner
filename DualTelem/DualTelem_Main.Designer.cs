@@ -56,13 +56,16 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.ledBulb1 = new Bulb.LedBulb();
-            this.ledBulb2 = new Bulb.LedBulb();
+            this.led_cmd1 = new Bulb.LedBulb();
+            this.led_cmd2 = new Bulb.LedBulb();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.but_cmdMode = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cb_blkprm_com2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
@@ -217,7 +220,7 @@
             // 
             // zed_qos_plot
             // 
-            this.zed_qos_plot.Location = new System.Drawing.Point(13, 395);
+            this.zed_qos_plot.Location = new System.Drawing.Point(14, 439);
             this.zed_qos_plot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.zed_qos_plot.Name = "zed_qos_plot";
             this.zed_qos_plot.ScrollGrace = 0D;
@@ -227,7 +230,7 @@
             this.zed_qos_plot.ScrollMinX = 0D;
             this.zed_qos_plot.ScrollMinY = 0D;
             this.zed_qos_plot.ScrollMinY2 = 0D;
-            this.zed_qos_plot.Size = new System.Drawing.Size(608, 386);
+            this.zed_qos_plot.Size = new System.Drawing.Size(624, 386);
             this.zed_qos_plot.TabIndex = 15;
             this.zed_qos_plot.UseExtendedPrintDialog = true;
             // 
@@ -277,7 +280,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(63, 5);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(30, 20);
+            this.label2.Size = new System.Drawing.Size(24, 16);
             this.label2.TabIndex = 21;
             this.label2.Text = "TX";
             // 
@@ -304,29 +307,29 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(183, 5);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(46, 20);
+            this.label5.Size = new System.Drawing.Size(37, 16);
             this.label5.TabIndex = 24;
             this.label5.Text = "CMD";
             // 
-            // ledBulb1
+            // led_cmd1
             // 
-            this.ledBulb1.Color = System.Drawing.Color.White;
-            this.ledBulb1.Location = new System.Drawing.Point(183, 24);
-            this.ledBulb1.Name = "ledBulb1";
-            this.ledBulb1.On = true;
-            this.ledBulb1.Size = new System.Drawing.Size(35, 32);
-            this.ledBulb1.TabIndex = 25;
-            this.ledBulb1.Text = "ledBulb1";
+            this.led_cmd1.Color = System.Drawing.Color.White;
+            this.led_cmd1.Location = new System.Drawing.Point(183, 24);
+            this.led_cmd1.Name = "led_cmd1";
+            this.led_cmd1.On = true;
+            this.led_cmd1.Size = new System.Drawing.Size(35, 32);
+            this.led_cmd1.TabIndex = 25;
+            this.led_cmd1.Text = "ledBulb1";
             // 
-            // ledBulb2
+            // led_cmd2
             // 
-            this.ledBulb2.Color = System.Drawing.Color.White;
-            this.ledBulb2.Location = new System.Drawing.Point(186, 215);
-            this.ledBulb2.Name = "ledBulb2";
-            this.ledBulb2.On = false;
-            this.ledBulb2.Size = new System.Drawing.Size(35, 32);
-            this.ledBulb2.TabIndex = 26;
-            this.ledBulb2.Text = "ledBulb2";
+            this.led_cmd2.Color = System.Drawing.Color.White;
+            this.led_cmd2.Location = new System.Drawing.Point(186, 215);
+            this.led_cmd2.Name = "led_cmd2";
+            this.led_cmd2.On = false;
+            this.led_cmd2.Size = new System.Drawing.Size(35, 32);
+            this.led_cmd2.TabIndex = 26;
+            this.led_cmd2.Text = "ledBulb2";
             // 
             // label6
             // 
@@ -373,18 +376,52 @@
             this.label10.TabIndex = 27;
             this.label10.Text = "HB";
             // 
+            // but_cmdMode
+            // 
+            this.but_cmdMode.Location = new System.Drawing.Point(461, 12);
+            this.but_cmdMode.Name = "but_cmdMode";
+            this.but_cmdMode.Size = new System.Drawing.Size(167, 28);
+            this.but_cmdMode.TabIndex = 32;
+            this.but_cmdMode.Text = "CMD Mode: Auto";
+            this.but_cmdMode.UseVisualStyleBackColor = true;
+            this.but_cmdMode.Click += new System.EventHandler(this.but_cmdMode_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(467, 43);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(190, 60);
+            this.label11.TabIndex = 33;
+            this.label11.Text = "AUTO: Prioritizes COM 1\r\nSwitches to COM2 if \r\nCOM1 is weak. ";
+            // 
+            // cb_blkprm_com2
+            // 
+            this.cb_blkprm_com2.AutoSize = true;
+            this.cb_blkprm_com2.Checked = true;
+            this.cb_blkprm_com2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_blkprm_com2.Location = new System.Drawing.Point(19, 382);
+            this.cb_blkprm_com2.Name = "cb_blkprm_com2";
+            this.cb_blkprm_com2.Size = new System.Drawing.Size(251, 20);
+            this.cb_blkprm_com2.TabIndex = 34;
+            this.cb_blkprm_com2.Text = "Block Param and Mission Listing Req";
+            this.cb_blkprm_com2.UseVisualStyleBackColor = true;
+            // 
             // DualTelem_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(640, 918);
+            this.ClientSize = new System.Drawing.Size(651, 929);
+            this.Controls.Add(this.cb_blkprm_com2);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.but_cmdMode);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.ledBulb2);
-            this.Controls.Add(this.ledBulb1);
+            this.Controls.Add(this.led_cmd2);
+            this.Controls.Add(this.led_cmd1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -446,12 +483,15 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private Bulb.LedBulb ledBulb1;
-        private Bulb.LedBulb ledBulb2;
+        private Bulb.LedBulb led_cmd1;
+        private Bulb.LedBulb led_cmd2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button but_cmdMode;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox cb_blkprm_com2;
     }
 }

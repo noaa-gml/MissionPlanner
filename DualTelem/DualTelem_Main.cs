@@ -154,7 +154,7 @@ namespace DualTelem
             }
 
             String s = (comPort1 != null && comPort1.IsOpen) ? (comPort1.PortName + "\n"):"Not Open";
-            s = string.Format("{0,-20}{1}\n", "Quality: ", linkQOS[0]);
+            s = string.Format("{0,-20}{1:0.0} %\n", "Quality: ", linkQOS[0]);
             s += string.Format("{0,-20}{1}\n", "Packets RX: ", packetRXCount[0]);
             s += string.Format("{0,-20}{1}\n", "Packets Lost:", packetLostCount[0]);
             s += string.Format("{0,-20}{1}\n", "Packets Sent: ", packetSentCount[0]);
@@ -180,7 +180,7 @@ namespace DualTelem
                 linkQOS[1] = (float)lqAvg[1].Average * 100.0f;
             }
             s = (comPort2 != null && comPort2.IsOpen) ? (comPort2.PortName + "\n") : "Not Open";
-            s = string.Format("{0,-20}{1}\n", "Quality: ", linkQOS[1]);
+            s = string.Format("{0,-20}{1:0.0} %\n", "Quality: ", linkQOS[1]);
             s += string.Format("{0,-20}{1}\n", "Packets RX: ", packetRXCount[1]);
             s += string.Format("{0,-20}{1}\n", "Packets Lost:", packetLostCount[1]);
             s += string.Format("{0,-20}{1}\n", "Packets Sent: ", packetSentCount[1]);
@@ -196,6 +196,9 @@ namespace DualTelem
             // Update Slow Screen Elements
             bar_com1.Value = (int) linkQOS[0];
             bar_com2.Value = (int)linkQOS[1];
+
+            // set priority command output
+            setAutoSelect(linkQOS[0], linkQOS[1]);
 
             updateCOMPlot(linkQOS[0], linkQOS[1]);
         }
@@ -346,6 +349,54 @@ namespace DualTelem
 
         }
 
+        private enum COMMAND_MODE
+        {
+            AUTO, 
+            COM1,
+            COM2
+        }
+        COMMAND_MODE cmdMode = COMMAND_MODE.AUTO;
+
+        private int auto_select = 0; 
+
+        private void setAutoSelect(float qos1, float qos2)
+        {
+            if (cmdMode == COMMAND_MODE.COM1) auto_select = 0; 
+            else if (cmdMode == COMMAND_MODE.COM2) auto_select = 1;
+            else
+            {
+                if (comPort1 != null && comPort1.IsOpen && qos1 > 50.0) auto_select = 0;
+                else if (comPort2 != null && comPort2.IsOpen && qos2 > qos1) auto_select = 1;
+                else auto_select = 0;
+            }
+            led_cmd1.On = (auto_select == 0);
+            led_cmd2.On = (auto_select == 1);
+        }
+
+        private void updateCmdButton()
+        {
+            but_cmdMode.Text = "CMD Mode: " + cmdMode.ToString();
+        }
+
+        private void but_cmdMode_Click(object sender, EventArgs e)
+        {
+            switch (cmdMode)
+            {
+                case COMMAND_MODE.AUTO:
+                    cmdMode =  COMMAND_MODE.COM1;
+                    break;
+                case COMMAND_MODE.COM1:
+                    cmdMode = COMMAND_MODE.COM2;
+                    break;
+                case COMMAND_MODE.COM2:
+                    cmdMode = COMMAND_MODE.AUTO;
+                    break;
+                default:
+                    return;
+            }
+            updateCmdButton();
+
+        }
 
         private void updateComStat(int comNum, byte compid, byte seq) 
         {
@@ -424,12 +475,36 @@ namespace DualTelem
             // This needs to be built out. Basically, we have to make a smart decision about what port to send commands to. 
             // We may decide it's worth sending some commands to BOTH ports, RTL for example
 
-            if (comPort1 != null && comPort1.IsOpen)
+            bool useCom1 = false, useCom2= false;
+
+            bool dualMsgID = false;
+
+            dualMsgID = (msg.msgid == (uint)MAVLink.MAVLINK_MSG_ID.HEARTBEAT); 
+
+            useCom1 = comPort1 != null &&
+                        comPort1.IsOpen &&
+                        (dualMsgID || auto_select == 0);
+
+            useCom2 = comPort2 != null &&
+                        comPort2.IsOpen &&
+                        (dualMsgID || auto_select == 1);
+
+            if (useCom1)
             {
                 packetSentCount[0]++;
                 bytesTXCount[0] += msg.buffer.Length;
                 comPort1.Write(msg.buffer, 0, msg.buffer.Length);
+                got_tx1 = true;
             }
+
+            if (useCom2)
+            {
+                packetSentCount[1]++;
+                bytesTXCount[1] += msg.buffer.Length;
+                comPort2.Write(msg.buffer, 0, msg.buffer.Length);
+                got_tx2 = true;
+            }
+
         }
 
         private void receiveCommands(ref MavlinkParse mlParser)
@@ -447,7 +522,7 @@ namespace DualTelem
 
                         forwardCommand(msg);
 
-                        got_tx1 = true;
+                        
                     }
                 } 
 
