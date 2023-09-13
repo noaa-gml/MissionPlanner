@@ -109,7 +109,47 @@ namespace DualTelem
             zed_qos_plot.GraphPane.YAxis.Scale.Max = 120;
             zed_qos_plot.GraphPane.YAxis.Title.IsVisible = false;
             zed_qos_plot.GraphPane.XAxis.Title.IsVisible = false;
+
+
+            CMB_serialport1.Items.Clear();
+            CMB_serialport1.Items.AddRange(SerialPort.GetPortNames());
+            int tmp_idx = CMB_serialport1.FindString((string)Properties.Settings.Default["comPort1"]);
+            if (tmp_idx >= 0) CMB_serialport1.SelectedIndex = tmp_idx;
+            tmp_idx = CMB_baudrate1.FindString((string)Properties.Settings.Default["baudRate1"]);
+            if (tmp_idx >= 0) CMB_baudrate1.SelectedIndex = tmp_idx;
+                
+                
+                
+            CMB_serialport2.Items.Clear();
+            CMB_serialport2.Items.AddRange(SerialPort.GetPortNames());
+            tmp_idx = CMB_serialport2.FindString((string)Properties.Settings.Default["comPort2"]);
+            if (tmp_idx >= 0) CMB_serialport2.SelectedIndex = tmp_idx;
+            tmp_idx = CMB_baudrate2.FindString((string)Properties.Settings.Default["baudRate2"]);
+            if (tmp_idx >= 0) CMB_baudrate2.SelectedIndex = tmp_idx;
         }
+        private void CMB_serialport1_Enter(object sender, EventArgs e)
+        {
+            CMB_serialport1.Items.Clear();
+            CMB_serialport1.Items.AddRange(SerialPort.GetPortNames());
+
+            if (comPort1 != null)
+            {
+                CMB_serialport1.SelectedIndex = CMB_serialport1.FindString(comPort1.PortName);
+
+            }
+        }
+
+        private void CMB_serialport2_Enter(object sender, EventArgs e)
+        {
+            CMB_serialport2.Items.Clear();
+            CMB_serialport2.Items.AddRange(SerialPort.GetPortNames());
+            if (comPort2 != null)
+            {
+                CMB_serialport2.SelectedIndex = CMB_serialport2.FindString(comPort2.PortName);
+
+            }
+        }
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -239,11 +279,17 @@ namespace DualTelem
             try
             {
                 comPort1 = new SerialPort();
-                comPort1.PortName = "COM11";
-                comPort1.BaudRate = 115200;
+                comPort1.PortName = CMB_serialport1.Text;
+                comPort1.BaudRate = int.Parse(CMB_baudrate1.Text);
 
 
                 openSerial(ref comPort1);
+
+                Properties.Settings.Default["comPort1"] = CMB_serialport1.Text;
+                Properties.Settings.Default["baudRate1"] = CMB_baudrate1.Text;
+                Properties.Settings.Default.Save();
+
+
 
                 got_hb1 = true;
                 got_tx1 = true;
@@ -263,10 +309,14 @@ namespace DualTelem
             try
             {
                 comPort2 = new SerialPort();
-                comPort2.PortName = "COM31";
-                comPort2.BaudRate = 19200;
+                comPort2.PortName = CMB_serialport2.Text;
+                comPort2.BaudRate = int.Parse(CMB_baudrate2.Text);
 
                 openSerial(ref comPort2);
+
+                Properties.Settings.Default["comPort2"] = CMB_serialport2.Text;
+                Properties.Settings.Default["baudRate2"] = CMB_baudrate2.Text;
+                Properties.Settings.Default.Save();
 
                 got_hb2 = true;
                 got_tx2 = true;

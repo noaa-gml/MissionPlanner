@@ -49,8 +49,8 @@
             this.zed_qos_plot = new ZedGraph.ZedGraphControl();
             this.CMB_serialport1 = new System.Windows.Forms.ComboBox();
             this.CMB_baudrate1 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.CMB_baudrate2 = new System.Windows.Forms.ComboBox();
+            this.CMB_serialport2 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -241,30 +241,48 @@
             this.CMB_serialport1.Name = "CMB_serialport1";
             this.CMB_serialport1.Size = new System.Drawing.Size(201, 24);
             this.CMB_serialport1.TabIndex = 16;
+            this.CMB_serialport1.Enter += new System.EventHandler(this.CMB_serialport1_Enter);
             // 
             // CMB_baudrate1
             // 
             this.CMB_baudrate1.FormattingEnabled = true;
+            this.CMB_baudrate1.Items.AddRange(new object[] {
+            "2400",
+            "4800",
+            "9600",
+            "19200",
+            "28800",
+            "57600",
+            "115200"});
             this.CMB_baudrate1.Location = new System.Drawing.Point(19, 132);
             this.CMB_baudrate1.Name = "CMB_baudrate1";
             this.CMB_baudrate1.Size = new System.Drawing.Size(201, 24);
             this.CMB_baudrate1.TabIndex = 17;
             // 
-            // comboBox1
+            // CMB_baudrate2
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(19, 323);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(201, 24);
-            this.comboBox1.TabIndex = 19;
+            this.CMB_baudrate2.FormattingEnabled = true;
+            this.CMB_baudrate2.Items.AddRange(new object[] {
+            "2400",
+            "4800",
+            "9600",
+            "19200",
+            "28800",
+            "57600",
+            "115200"});
+            this.CMB_baudrate2.Location = new System.Drawing.Point(19, 323);
+            this.CMB_baudrate2.Name = "CMB_baudrate2";
+            this.CMB_baudrate2.Size = new System.Drawing.Size(201, 24);
+            this.CMB_baudrate2.TabIndex = 19;
             // 
-            // comboBox2
+            // CMB_serialport2
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(19, 291);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(201, 24);
-            this.comboBox2.TabIndex = 18;
+            this.CMB_serialport2.FormattingEnabled = true;
+            this.CMB_serialport2.Location = new System.Drawing.Point(19, 291);
+            this.CMB_serialport2.Name = "CMB_serialport2";
+            this.CMB_serialport2.Size = new System.Drawing.Size(201, 24);
+            this.CMB_serialport2.TabIndex = 18;
+            this.CMB_serialport2.Enter += new System.EventHandler(this.CMB_serialport2_Enter);
             // 
             // label1
             // 
@@ -427,8 +445,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.CMB_baudrate2);
+            this.Controls.Add(this.CMB_serialport2);
             this.Controls.Add(this.CMB_baudrate1);
             this.Controls.Add(this.CMB_serialport1);
             this.Controls.Add(this.zed_qos_plot);
@@ -476,8 +494,8 @@
         private ZedGraph.ZedGraphControl zed_qos_plot;
         private System.Windows.Forms.ComboBox CMB_serialport1;
         private System.Windows.Forms.ComboBox CMB_baudrate1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.ComboBox CMB_baudrate2;
+        private System.Windows.Forms.ComboBox CMB_serialport2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
