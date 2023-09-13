@@ -15,7 +15,7 @@ using ZedGraph;
 namespace DualTelem
 {
 
-
+    
 
     public partial class DualTelem_Main : Form
     {
