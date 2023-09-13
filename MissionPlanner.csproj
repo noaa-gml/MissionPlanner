@@ -560,11 +560,6 @@
       <Project>{563d7c2e-14e2-47ec-95e4-4ea0bba75c18}</Project>
       <Name>Xamarin.Forms.Platform.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="ExtLibs\ZedGraph\ZedGraph.csproj">
-      <Project>{2541686B-1673-43BF-AF89-3163945DB009}</Project>
-      <Name>ZedGraph</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
     <ProjectReference Include="ExtLibs\Zeroconf\Zeroconf\Zeroconf.csproj">
       <Project>{F4B60F03-F4C8-42CD-A46D-712838DC184B}</Project>
       <Name>Zeroconf</Name>
