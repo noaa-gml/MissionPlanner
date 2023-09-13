@@ -74,6 +74,9 @@ namespace DualTelem
         int[] packetRXCount = new int[2]; 
         int[] packetSentCount = new int[2];
         int[] packetLostCount = new int[2];
+        int[] bytesRXCount = new int[2];
+        int[] bytesRXBad = new int[2];
+        int[] bytesTXCount = new int[2];
         float[] linkQOS = new float[2];
 
         byte[][] lastSeq = new byte[2][];
@@ -155,10 +158,14 @@ namespace DualTelem
             s += string.Format("{0,-20}{1}\n", "Packets RX: ", packetRXCount[0]);
             s += string.Format("{0,-20}{1}\n", "Packets Lost:", packetLostCount[0]);
             s += string.Format("{0,-20}{1}\n", "Packets Sent: ", packetSentCount[0]);
+            s += string.Format("{0,-20}{1} bps\n", "Receive Rate: ", bytesRXCount[0]*10);
+            s += string.Format("{0,-20}{1} bps\n", "Transmit Rate: ", bytesTXCount[0] * 10);
             lbl_com1_status.Text = s;
             packetRXCount[0] = 0;
             packetLostCount[0] = 0;
             packetSentCount[0] = 0;
+            bytesRXCount[0] = 0;
+            bytesTXCount[0] = 0;
 
             if (gotFirstHB[1])
             {
@@ -177,10 +184,14 @@ namespace DualTelem
             s += string.Format("{0,-20}{1}\n", "Packets RX: ", packetRXCount[1]);
             s += string.Format("{0,-20}{1}\n", "Packets Lost:", packetLostCount[1]);
             s += string.Format("{0,-20}{1}\n", "Packets Sent: ", packetSentCount[1]);
+            s += string.Format("{0,-20}{1} bps\n", "Receive Rate: ", bytesRXCount[1]*10);
+            s += string.Format("{0,-20}{1} bps\n", "Transmit Rate: ", bytesTXCount[1] * 10);
             lbl_com2_status.Text = s;
             packetRXCount[1] = 0;
             packetLostCount[1] = 0;
             packetSentCount[1] = 0;
+            bytesRXCount[1] = 0;
+            bytesTXCount[1] = 0;
 
             // Update Slow Screen Elements
             bar_com1.Value = (int) linkQOS[0];
@@ -365,6 +376,7 @@ namespace DualTelem
                 DateTime endRead = DateTime.Now.AddMilliseconds(100);
                 while (comPort != null && comPort.IsOpen && comPort.BytesToRead > 10)
                 {
+                    int startCnt = comPort.BytesToRead;
                     if (DateTime.Now > endRead) break; // try to break on even packets
                     MAVLinkMessage msg = mlParser.ReadPacket(comPort.BaseStream);
                     if (msg != null)
@@ -392,6 +404,7 @@ namespace DualTelem
 
                         //lastSeq[msg.compid] = msg.seq;
                     }
+                    bytesRXCount[comNum-1] += startCnt - comPort.BytesToRead;
                 }
             } catch (Exception ex)
             {
@@ -408,9 +421,13 @@ namespace DualTelem
 
         private void forwardCommand(MAVLinkMessage msg)
         {
+            // This needs to be built out. Basically, we have to make a smart decision about what port to send commands to. 
+            // We may decide it's worth sending some commands to BOTH ports, RTL for example
+
             if (comPort1 != null && comPort1.IsOpen)
             {
-                packetSentCount[0]++; 
+                packetSentCount[0]++;
+                bytesTXCount[0] += msg.buffer.Length;
                 comPort1.Write(msg.buffer, 0, msg.buffer.Length);
             }
         }
